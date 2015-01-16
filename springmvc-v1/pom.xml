@@ -296,12 +296,28 @@
 			<version>2.1</version>
 		</dependency>
 		<!-- commons end -->
+		<!-- jpa   http://streammoon.iteye.com/blog/1751942-->
+
+	<dependency> 
+		<groupId>org.hibernate</groupId> 
+		<artifactId>hibernate-core</artifactId> 
+		<version>3.6.10.Final</version> 
+	</dependency> 
+	<dependency> 
+		<groupId>org.hibernate</groupId> 
+		<artifactId>hibernate-entitymanager</artifactId> 
+		<version>3.6.10.Final</version> 
+	</dependency> 
+	<dependency> 
+		<groupId>org.hibernate</groupId> 
+		<artifactId>hibernate-ehcache</artifactId> 
+		<version>3.6.10.Final</version> 
+	</dependency> 
+
+		<!-- end -->
 		
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-core</artifactId>
-			<version>5.7.0</version>
-		</dependency>
+
+
 	</dependencies>
 	<build>
 		<finalName>springmvc</finalName>
