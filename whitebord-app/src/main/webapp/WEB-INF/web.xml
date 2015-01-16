@@ -3,7 +3,7 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
-	<display-name>zhaopin</display-name>
+	<display-name>whiteborad-app</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
@@ -38,43 +38,7 @@
 		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
 	</filter>
 	
-	<!-- Shiro filter 
-	<filter>
-		<filter-name>shiroFilter</filter-name>
-		<filter-class>
-			org.springframework.web.filter.DelegatingFilterProxy
-		</filter-class>
-		<init-param>
-			<param-name>targetFilterLifecycle</param-name>
-			<param-value>true</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>shiroFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	-->
-	<!--  改写URL的Web过滤器 	-->
-	<filter> 
-		<filter-name>UrlRewriteFilter</filter-name> 
-		<filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class> 
-	</filter> 
-	<filter-mapping> 
-		<filter-name>UrlRewriteFilter</filter-name> 
-		<url-pattern>/*</url-pattern> 
-	</filter-mapping> 
-	
-	<!-- Etag filter
-	<filter>
-		<filter-name>ETagContentFilter</filter-name>
-		<filter-class>com.jing.shiro.etag.ETagContentFilter</filter-class>
-	</filter>
-	
-	<filter-mapping>
-		<filter-name>ETagContentFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	 -->
+
 	<!-- 配置Log4j-->
 	<context-param>
 		<param-name>webAppRootKey</param-name>
@@ -110,10 +74,6 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	
-<!-- 	<session-config>
-		<session-timeout>60</session-timeout>
-	</session-config>
-	 -->
 	<jsp-config>
 		<jsp-property-group>
 			<display-name>JSPConfiguration</display-name>
@@ -128,11 +88,6 @@
      <error-code>404</error-code> 
      <location>/404.jsp</location> 
 	</error-page> 
-
-	<error-page>
-     <error-code>500</error-code>
-     <location>/500.html</location>
-	</error-page>
 
 	<welcome-file-list>
 		<welcome-file>pages/view/login/login.jsp</welcome-file>
