@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public abstract class IdEntity  implements Serializable{
 	
-	protected Long tid;
+	protected String tid;
 	protected Integer optlock;
 	
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public abstract class IdEntity  implements Serializable{
 	@Id
 	@SequenceGenerator(name = "generator", sequenceName = "CRM_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator")
-	public Long getTid() {
+	public String getTid() {
 		return tid;
 	}
 	
@@ -49,7 +49,7 @@ public abstract class IdEntity  implements Serializable{
 		this.optlock = optlock;
 	}
 
-	public void setTid(Long tid) {
+	public void setTid(String tid) {
 		this.tid = tid;
 	}
 	
