@@ -1,11 +1,16 @@
 package com.jing.maven.account.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.jing.maven.account.entity.AccountPO;
+import com.jing.maven.account.service.AccountService;
 import com.jing.maven.manager.entity.Message;
 
 public class AccountController {
+	
+	@Autowired
+	private AccountService accountService;
 	
 	/**
 	 * APP登录
@@ -13,7 +18,7 @@ public class AccountController {
 	 * @return
 	 */
 	public Message accountLogin(@RequestBody AccountPO account){
-		return null;
+		return accountService.accountLogin(account);
 	}
 	
 	/**
@@ -22,7 +27,7 @@ public class AccountController {
 	 * @return
 	 */
 	public Message accountRegister(@RequestBody AccountPO account){
-		return null;
+		return accountService.accountRegister(account);
 	}
 	
 	/**
@@ -31,7 +36,7 @@ public class AccountController {
 	 * @return
 	 */
 	public Message updatePwd(@RequestBody AccountPO account){
-		return null;
+		return accountService.updatePwd(account);
 	}
 	
 	/**
@@ -40,7 +45,7 @@ public class AccountController {
 	 * @return
 	 */
 	public Message getAccountPwd(@RequestBody AccountPO account){
-		return null;		
+		return accountService.getAccountPwd(account);		
 	}
 
 }

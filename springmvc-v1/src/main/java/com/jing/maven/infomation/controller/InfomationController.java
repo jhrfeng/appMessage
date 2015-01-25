@@ -2,15 +2,20 @@ package com.jing.maven.infomation.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.jing.maven.infomation.entity.FriendListPO;
 import com.jing.maven.infomation.entity.InfomationPO;
 import com.jing.maven.infomation.model.FriendVo;
 import com.jing.maven.infomation.model.InfomationRequest;
+import com.jing.maven.infomation.service.InfomationService;
 import com.jing.maven.manager.entity.Message;
 
 public class InfomationController {
+	
+	@Autowired
+	private InfomationService infoService;
 	
 	/**
 	 * 个人好友信息查看接口
@@ -18,7 +23,8 @@ public class InfomationController {
 	 * @return
 	 */
 	public InfomationPO showInfo(@RequestBody InfomationRequest infoRequest){
-		return null;
+		
+		return infoService.showInfo(infoRequest);
 	}
 	
 	/**
@@ -27,7 +33,7 @@ public class InfomationController {
 	 * @return
 	 */
 	public Message updateInfo(@RequestBody InfomationPO infomation){
-		return null;
+		return infoService.updateInfo(infomation);
 	}
 	
 	/**
@@ -36,7 +42,7 @@ public class InfomationController {
 	 * @return
 	 */
 	public Message updateRemark(@RequestBody FriendListPO friend){
-		return null;
+		return infoService.updateRemark(friend);
 	}
 	
 	/**
@@ -44,8 +50,8 @@ public class InfomationController {
 	 * @param infoRequest
 	 * @return
 	 */
-	public List<FriendVo> loadFriendList(@RequestBody InfomationRequest infoRequest){
-		return null;
+	public FriendVo loadFriendList(@RequestBody InfomationRequest infoRequest){
+		return infoService.loadFriendList(infoRequest);
 	}
 	
 	/**
@@ -53,7 +59,7 @@ public class InfomationController {
 	 * @return
 	 */
 	public List<InfomationPO> introduceFriend(){
-		return null;
+		return infoService.introduceFriend();
 	}
 	
 	/**
@@ -61,16 +67,25 @@ public class InfomationController {
 	 * @param infoRequest
 	 * @return
 	 */
-	public InfomationPO searchFriend(@RequestBody InfomationRequest infoRequest){
-		return null;
+	public FriendVo searchFriend(@RequestBody InfomationRequest infoRequest){
+		return infoService.searchFriend(infoRequest);
+	}
+	
+	/**
+	 * 好友新增
+	 * @param infomationRequest
+	 * @return
+	 */
+	public Message addFriend(@RequestBody InfomationRequest infomationRequest){
+		return infoService.addFriend(infomationRequest);
 	}
 	
 	/**
 	 * 好友验证
 	 * @return
 	 */
-	public Message validFriend(@RequestBody InfomationPO infomation){
-		return null;
+	public Message validFriend(@RequestBody FriendListPO friendList){
+		return infoService.validFriend(friendList);
 	}
 	
 	/**
@@ -78,8 +93,8 @@ public class InfomationController {
 	 * @param infoRequest
 	 * @return
 	 */
-	public Message delFriend(@RequestBody InfomationRequest infoRequest){
-		return null;
+	public Message delFriend(@RequestBody FriendListPO friendList){
+		return infoService.delFriend(friendList);
 	}
 
 }

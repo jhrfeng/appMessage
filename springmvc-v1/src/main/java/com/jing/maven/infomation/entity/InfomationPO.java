@@ -102,6 +102,16 @@ public class InfomationPO  extends IdEntity {
 	 */
 	private String updateId;
 
+	public InfomationPO(){}
+	
+	public InfomationPO(String tid, String honeyName, String sex, String province, String area){
+		this.tid = tid;
+		this.honeyName = honeyName;
+		this.sex = sex;
+		this.province = province;
+		this.area = area;
+		
+	}
 	
 	public String getHoneyName() {
 		return honeyName;

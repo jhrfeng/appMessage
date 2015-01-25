@@ -8,6 +8,7 @@ import com.jing.maven.account.entity.AccountPO;
 import com.jing.maven.common.util.EncryptUtils;
 import com.jing.maven.common.util.MathUtils;
 import com.jing.maven.infomation.dao.InfomationDao;
+import com.jing.maven.infomation.entity.InfomationPO;
 import com.jing.maven.manager.entity.Message;
 
 @Service
@@ -34,6 +35,12 @@ public class AccountService {
 		}else{
 			String pwd = EncryptUtils.encryptMD5(account.getPassword()+"");
 			if(pwd.equals(loginAccount.getPassword())){
+				/***********************/
+				
+				//返回语音账号 和 密码 (设置状态为在线)
+				
+				
+				/**********************/				
 				message.setOptStatus(true);
 				message.setMessage("登录成功");
 			}else{
@@ -51,8 +58,46 @@ public class AccountService {
 	 * @return
 	 */
 	public Message accountRegister(AccountPO account){
+		Message message = new Message();
+		try{		
+			
+			Long count = accountDao.countByAccount(account.getAccount());
+			if(count > 1){
+				message.setOptStatus(false);
+				message.setMessage("该账号已存在");
+				return message;
+			}
+			//生成个人信息表
+			InfomationPO info = new InfomationPO();
+			info.setCreateDate("2012/12/12");
+			info.setUpdateDate("2112/12/12");
+			infomationDao.save(info);
+			
 		
-		return null;
+            /***************************************/
+			
+			//生成语音账号	
+			
+			/***************************************/
+			
+			//生成注册账号
+			account.setPassword(EncryptUtils.encryptMD5(account.getPassword()));
+			account.setUpdateDate("2012/12/12");
+			account.setUpdateid(info.getTid());
+			account.setInfoid(info.getTid());
+			accountDao.save(account);
+			
+			
+			message.setOptStatus(true);
+			message.setMessage("注册成功");
+			return message;
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			message.setOptStatus(false);
+			message.setMessage("注册失败");
+			return message;
+		}
 	}
 	
 	/**
@@ -63,7 +108,7 @@ public class AccountService {
 	public Message updatePwd(AccountPO account){
 		Message message = new Message();
 		try{
-			AccountPO updateAccount = accountDao.findOne(""); //获取当前登录用户id
+			AccountPO updateAccount = accountDao.findOne("402884e54b1f3e4d014b1f3fd0800002"); //获取当前登录用户id
 			updateAccount.setPassword(EncryptUtils.encryptMD5(account.getPassword()));
 			updateAccount.setUpdateDate("2012/12/12");
 			accountDao.save(updateAccount);

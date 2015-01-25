@@ -10,6 +10,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -30,11 +32,11 @@ public abstract class IdEntity  implements Serializable{
 	
 	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	//@GeneratedValue(generator = "system-uuid")
-	//@GenericGenerator(name = "system-uuid", strategy = "uuid")
+	//@SequenceGenerator(name = "generator", sequenceName = "CRM_SEQUENCE")
+	//@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator")
 	@Id
-	@SequenceGenerator(name = "generator", sequenceName = "CRM_SEQUENCE")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator")
+	@GeneratedValue(generator = "system-uuid")
+	@GenericGenerator(name = "system-uuid", strategy = "uuid")
 	public String getTid() {
 		return tid;
 	}

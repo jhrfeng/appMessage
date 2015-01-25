@@ -30,19 +30,20 @@ public class FriendListPO extends IdEntity {
 	private String friendId;
 
 	/**
-	 * 我的备注
-	 */
-	private String myRemark;
-	
-	/**
 	 * 好友备注
 	 */
 	private String friendRemark;
 	
 	/**
-	 * 0黑名单，1好友，2验证，3拒绝
+	 * 0黑名单，1好友，2验证，3拒绝, 4删除
 	 */
 	private String status;
+
+	/**
+	 * 我的备注
+	 */
+	 
+	private String myRemark;
 
 	
 	public String getMyId() {

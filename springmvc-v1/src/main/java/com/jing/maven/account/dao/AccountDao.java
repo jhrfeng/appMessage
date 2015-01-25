@@ -10,5 +10,8 @@ public interface AccountDao extends PagingAndSortingRepository<AccountPO, String
 	
 	@Query(" from AccountPO t where t.account = ?")
 	public AccountPO findByAccount(String account);
+	
+	@Query(" select count(*) from AccountPO t where t.account = ? ")
+	public Long countByAccount(String account);
 
 }
