@@ -3,6 +3,8 @@ package com.jing.maven.infomation.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.jing.maven.manager.entity.IdEntity;
 
 /**
@@ -13,6 +15,7 @@ import com.jing.maven.manager.entity.IdEntity;
  */
 @Entity
 @Table(name = "app_friend_list")
+@JsonInclude(Include.NON_NULL)  
 public class FriendListPO extends IdEntity {
 	
 	private static final long serialVersionUID = 2433461464054606867L;
@@ -44,6 +47,11 @@ public class FriendListPO extends IdEntity {
 	 */
 	 
 	private String myRemark;
+	
+	/**
+	 * 好友sip账号
+	 */
+	private String friendSip;
 
 	
 	public String getMyId() {
@@ -84,6 +92,14 @@ public class FriendListPO extends IdEntity {
 
 	public void setMyRemark(String myRemark) {
 		this.myRemark = myRemark;
+	}
+
+	public String getFriendSip() {
+		return friendSip;
+	}
+
+	public void setFriendSip(String friendSip) {
+		this.friendSip = friendSip;
 	}
 	
 	

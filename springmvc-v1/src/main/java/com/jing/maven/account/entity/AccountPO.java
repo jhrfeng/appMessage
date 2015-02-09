@@ -3,6 +3,8 @@ package com.jing.maven.account.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.jing.maven.manager.entity.IdEntity;
 
 /**
@@ -13,6 +15,7 @@ import com.jing.maven.manager.entity.IdEntity;
  */
 @Entity
 @Table(name = "app_account")
+@JsonInclude(Include.NON_NULL)  
 public class AccountPO extends IdEntity {
 	
 	private static final long serialVersionUID = 2433461464054606867L;
@@ -26,6 +29,11 @@ public class AccountPO extends IdEntity {
 	 * 密码
 	 */
 	private String password;
+	
+	/**
+	 * 设备mac地址
+	 */
+	private String mac;
 	
 	
 	/**
@@ -47,7 +55,7 @@ public class AccountPO extends IdEntity {
 	 * 修改人
 	 */
 	private String updateid;
-
+	
 
 	public String getAccount() {
 		return account;
@@ -95,6 +103,14 @@ public class AccountPO extends IdEntity {
 
 	public void setUpdateid(String updateid) {
 		this.updateid = updateid;
+	}
+
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
 	}
 	
 	

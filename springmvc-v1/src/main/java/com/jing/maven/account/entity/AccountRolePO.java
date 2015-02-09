@@ -3,6 +3,8 @@ package com.jing.maven.account.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.jing.maven.manager.entity.IdEntity;
 
 /**
@@ -13,6 +15,7 @@ import com.jing.maven.manager.entity.IdEntity;
  */
 @Entity
 @Table(name = "app_account_role")
+@JsonInclude(Include.NON_NULL)  
 public class AccountRolePO extends IdEntity {
 	
 	private static final long serialVersionUID = 2433461464054606867L;

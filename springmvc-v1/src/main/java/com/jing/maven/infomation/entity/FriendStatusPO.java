@@ -3,6 +3,8 @@ package com.jing.maven.infomation.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.jing.maven.manager.entity.IdEntity;
 
 /**
@@ -13,16 +15,17 @@ import com.jing.maven.manager.entity.IdEntity;
  */
 @Entity
 @Table(name = "app_friend_status")
+@JsonInclude(Include.NON_NULL)  
 public class FriendStatusPO extends IdEntity {
 	private static final long serialVersionUID = 2433461464054606867L;
 	
 	/**
-	 * 好友ID
+	 * 我的信息ID
 	 */
-	private String friendId;
+	private String myinfoId;
 	
 	/**
-	 * 好友状态
+	 * 我的状态 0不在线  1在线
 	 */
 	private String status;
 	
@@ -36,13 +39,14 @@ public class FriendStatusPO extends IdEntity {
 	 */
 	private String sipPwd;
 
-	
-	public String getFriendId() {
-		return friendId;
+    
+
+	public String getMyinfoId() {
+		return myinfoId;
 	}
 
-	public void setFriendId(String friendId) {
-		this.friendId = friendId;
+	public void setMyinfoId(String myinfoId) {
+		this.myinfoId = myinfoId;
 	}
 
 	public String getStatus() {

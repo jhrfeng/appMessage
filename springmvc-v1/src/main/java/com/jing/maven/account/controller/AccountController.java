@@ -1,12 +1,18 @@
 package com.jing.maven.account.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.jing.maven.account.entity.AccountPO;
+import com.jing.maven.account.model.AccountVo;
 import com.jing.maven.account.service.AccountService;
+import com.jing.maven.infomation.model.InfomationRequest;
 import com.jing.maven.manager.entity.Message;
 
+@Controller
+@RequestMapping("account")
 public class AccountController {
 	
 	@Autowired
@@ -17,7 +23,8 @@ public class AccountController {
 	 * @param account
 	 * @return
 	 */
-	public Message accountLogin(@RequestBody AccountPO account){
+	@RequestMapping("/login")
+	public AccountVo accountLogin(@RequestBody AccountPO account){
 		return accountService.accountLogin(account);
 	}
 	
@@ -26,7 +33,8 @@ public class AccountController {
 	 * @param account
 	 * @return
 	 */
-	public Message accountRegister(@RequestBody AccountPO account){
+	@RequestMapping("/register")
+	public AccountVo accountRegister(@RequestBody AccountPO account){
 		return accountService.accountRegister(account);
 	}
 	
@@ -35,6 +43,7 @@ public class AccountController {
 	 * @param account
 	 * @return
 	 */
+	@RequestMapping("/updatePwd")
 	public Message updatePwd(@RequestBody AccountPO account){
 		return accountService.updatePwd(account);
 	}
@@ -46,6 +55,16 @@ public class AccountController {
 	 */
 	public Message getAccountPwd(@RequestBody AccountPO account){
 		return accountService.getAccountPwd(account);		
+	}
+	
+	/**
+	 * 验证用户是否在线
+	 * @param infoRequest
+	 * @return
+	 */
+	@RequestMapping("/active")
+	public Message validActive(InfomationRequest infoRequest){
+		return null;
 	}
 
 }

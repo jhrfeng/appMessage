@@ -5,10 +5,14 @@ import org.springframework.stereotype.Service;
 
 import com.jing.maven.account.dao.AccountDao;
 import com.jing.maven.account.entity.AccountPO;
+import com.jing.maven.account.model.AccountVo;
 import com.jing.maven.common.util.EncryptUtils;
 import com.jing.maven.common.util.MathUtils;
+import com.jing.maven.infomation.dao.FriendStatusDao;
 import com.jing.maven.infomation.dao.InfomationDao;
+import com.jing.maven.infomation.entity.FriendStatusPO;
 import com.jing.maven.infomation.entity.InfomationPO;
+import com.jing.maven.infomation.model.InfomationRequest;
 import com.jing.maven.manager.entity.Message;
 
 @Service
@@ -19,37 +23,43 @@ public class AccountService {
 	
 	@Autowired
 	private InfomationDao infomationDao;
+	
+	@Autowired
+	private FriendStatusDao friendStatusDao;
 
 	/**
 	 * APP登录
 	 * @param account
 	 * @return
 	 */
-	public Message accountLogin(AccountPO account){
+	public AccountVo accountLogin(AccountPO account){
 		
-		Message message = new Message();
+		AccountVo accountVo = new AccountVo();
 		AccountPO loginAccount = accountDao.findByAccount(account.getAccount());
 		if(null == loginAccount){
-			message.setOptStatus(false);
-			message.setMessage("不存在该账号");
+			accountVo.setOptStatus(false);
+			accountVo.setMessage("不存在该账号");
 		}else{
 			String pwd = EncryptUtils.encryptMD5(account.getPassword()+"");
 			if(pwd.equals(loginAccount.getPassword())){
-				/***********************/
-				
+				/***********************/			
 				//返回语音账号 和 密码 (设置状态为在线)
-				
+				FriendStatusPO friendStatus = friendStatusDao.findBySipAccount(account.getAccount());
+				friendStatus.setStatus("1");
+				friendStatusDao.save(friendStatus);
+				accountVo.setFriendStatus(friendStatus);
+				accountVo.setAccount(loginAccount);
 				
 				/**********************/				
-				message.setOptStatus(true);
-				message.setMessage("登录成功");
+				accountVo.setOptStatus(true);
+				accountVo.setMessage("登录成功");
 			}else{
-				message.setOptStatus(false);
-				message.setMessage("密码不正确");
+				accountVo.setOptStatus(false);
+				accountVo.setMessage("密码不正确");
 			}	
 		}
 		
-		return message;
+		return accountVo;
 	}
 	
 	/**
@@ -57,15 +67,15 @@ public class AccountService {
 	 * @param account
 	 * @return
 	 */
-	public Message accountRegister(AccountPO account){
-		Message message = new Message();
+	public AccountVo accountRegister(AccountPO account){
+		AccountVo accountVo = new AccountVo();
 		try{		
-			
+			String pwd = account.getPassword();
 			Long count = accountDao.countByAccount(account.getAccount());
-			if(count > 1){
-				message.setOptStatus(false);
-				message.setMessage("该账号已存在");
-				return message;
+			if(count > 0){
+				accountVo.setOptStatus(false);
+				accountVo.setMessage("该账号已存在");
+				return accountVo;
 			}
 			//生成个人信息表
 			InfomationPO info = new InfomationPO();
@@ -73,30 +83,37 @@ public class AccountService {
 			info.setUpdateDate("2112/12/12");
 			infomationDao.save(info);
 			
-		
-            /***************************************/
-			
-			//生成语音账号	
-			
-			/***************************************/
 			
 			//生成注册账号
-			account.setPassword(EncryptUtils.encryptMD5(account.getPassword()));
+			account.setPassword(EncryptUtils.encryptMD5(pwd));
+			account.setCreateDate("2012/12/12");
 			account.setUpdateDate("2012/12/12");
 			account.setUpdateid(info.getTid());
 			account.setInfoid(info.getTid());
 			accountDao.save(account);
 			
+			/***************************************/
 			
-			message.setOptStatus(true);
-			message.setMessage("注册成功");
-			return message;
+			//生成语音账号	
+			FriendStatusPO friendStatus = new FriendStatusPO();
+			friendStatus.setMyinfoId(info.getTid());
+			friendStatus.setSipAccount(account.getAccount());
+			friendStatus.setSipPwd(EncryptUtils.string2MD5(pwd));
+			friendStatus.setStatus("1"); //在线
+			friendStatusDao.save(friendStatus);
+			
+			/***************************************/
+			
+			accountVo.setFriendStatus(friendStatus);
+			accountVo.setOptStatus(true);
+			accountVo.setMessage("注册成功");
+			return accountVo;
 			
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptStatus(false);
-			message.setMessage("注册失败");
-			return message;
+			accountVo.setOptStatus(false);
+			accountVo.setMessage("注册失败");
+			return accountVo;
 		}
 	}
 	
@@ -108,9 +125,12 @@ public class AccountService {
 	public Message updatePwd(AccountPO account){
 		Message message = new Message();
 		try{
-			AccountPO updateAccount = accountDao.findOne("402884e54b1f3e4d014b1f3fd0800002"); //获取当前登录用户id
+			AccountPO updateAccount = accountDao.findOne(account.getTid()); //获取当前登录用户id
 			updateAccount.setPassword(EncryptUtils.encryptMD5(account.getPassword()));
 			updateAccount.setUpdateDate("2012/12/12");
+			/** 日志记录信息  **/
+			
+			
 			accountDao.save(updateAccount);
 			message.setOptStatus(true);
 			message.setMessage("修改密码成");
@@ -159,5 +179,14 @@ public class AccountService {
 			message.setMessage("操作失败");
 			return message;
 		}		
+	}
+	
+	/**
+	 * 验证用户是否在线
+	 * @param infoRequest
+	 * @return
+	 */
+	public Message validActive(InfomationRequest infoRequest){
+		return null;
 	}
 }

@@ -1,5 +1,9 @@
 package com.jing.maven.manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)  
 public class Message {
 	
 	/**
@@ -16,6 +20,13 @@ public class Message {
 	 * 返回消息
 	 */
 	private String message;
+	
+	public Message(){}
+	
+	public Message(Boolean optStatus, String message){
+		this.optStatus = optStatus;
+		this.message = message;
+	}
 
 	public String getOptCode() {
 		return optCode;

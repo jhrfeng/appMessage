@@ -3,6 +3,8 @@ package com.jing.maven.infomation.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.jing.maven.manager.entity.IdEntity;
 
 
@@ -14,6 +16,7 @@ import com.jing.maven.manager.entity.IdEntity;
  */
 @Entity
 @Table(name = "app_infomation")
+@JsonInclude(Include.NON_NULL)  
 public class InfomationPO  extends IdEntity {
 	private static final long serialVersionUID = 2433461464054606867L;
 	
@@ -66,6 +69,11 @@ public class InfomationPO  extends IdEntity {
 	 * 年级
 	 */
 	private String grade;
+	
+	/**
+	 * 班级
+	 */
+	private String classroom;
 	
 	/**
 	 * 记录
@@ -247,6 +255,14 @@ public class InfomationPO  extends IdEntity {
 
 	public void setUpdateId(String updateId) {
 		this.updateId = updateId;
+	}
+
+	public String getClassroom() {
+		return classroom;
+	}
+
+	public void setClassroom(String classroom) {
+		this.classroom = classroom;
 	}
 	
 	

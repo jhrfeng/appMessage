@@ -40,7 +40,7 @@ public class InfomationTest {
 	//@Test
 	public void showInfo(){
 		InfomationRequest infoRequest = new InfomationRequest();
-		infoRequest.setRequestId("402884e54b1f3e4d014b1f3fbef80001");
+		infoRequest.setRequestId("402884e54b2698db014b2698fb510000");
 		infoService.showInfo(infoRequest);
 	}
 	
@@ -52,7 +52,7 @@ public class InfomationTest {
 	//@Test
 	public void updateInfo(){
 		InfomationPO infomation = new InfomationPO();
-		infomation.setTid("402884e54b1f3e4d014b1f3fbef80001");
+		infomation.setTid("402884e54b2698db014b2698fb510000");
 		infomation.setAddr("abc");
 		infomation.setAge("22");
 		infomation.setArea("11");
@@ -81,8 +81,8 @@ public class InfomationTest {
 	//@Test
 	public void updateRemark(){
 		FriendListPO friend = new FriendListPO();
-		friend.setTid("402884e54b211439014b21151ab80001");
-		friend.setFriendId("402884e54b1f3e4d014b1f3fbef80001");
+		friend.setTid("402884e54b26b90d014b26b92a560001");
+		friend.setFriendId("402884e54b2699f3014b269a0e8b0000");
 		friend.setFriendRemark("王小鹰1");
 		 infoService.updateRemark(friend);
 	}
@@ -112,7 +112,7 @@ public class InfomationTest {
 	 * @param infoRequest
 	 * @return
 	 */
-	//@Test
+	@Test
 	public void searchFriend(){
 		InfomationRequest infoRequest = new InfomationRequest();
 		infoRequest.setRequestName("hell");
@@ -124,11 +124,12 @@ public class InfomationTest {
 	 * @param infomationRequest
 	 * @return
 	 */
-	@Test
+	//@Test
 	public void addFriend(){
-		InfomationRequest infoRequest = new InfomationRequest();
-		infoRequest.setRequestId("402884e54b1f3e4d014b1f3fbef80001");
-		 infoService.addFriend(infoRequest);
+		FriendListPO  infoRequest = new FriendListPO();
+		infoRequest.setMyId("402884e54b2699f3014b269a0e8b0000");
+		infoRequest.setFriendId("402884e54b2698db014b2698fb510000");
+		infoService.addFriend(infoRequest);
 	}
 	
 	/**
@@ -145,11 +146,11 @@ public class InfomationTest {
 	 * @param infoRequest
 	 * @return
 	 */
-	//@Test
+	@Test
 	public void delFriend(){
 		FriendListPO friendList = new FriendListPO();
-		friendList.setTid("402884e54b219abb014b219b22270001");
-		friendList.setFriendId("402884e54b1f3e4d014b1f3fbef80001");
+		friendList.setTid("402884e54b26b90d014b26b92a560001");
+		friendList.setFriendId("402884e54b2699f3014b269a0e8b0000");
 		infoService.delFriend(friendList);
 	}
 	
