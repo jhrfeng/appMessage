@@ -90,6 +90,28 @@
 		<property name="minEvictableIdleTimeMillis" value="3600000" />
 	</bean>
 	
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="MonitorRealm" />
+	</bean>
+		
+	<bean id="MonitorRealm" class="com.jing.maven.shiro.security.MonitorRealm"/>
+	
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="unauthorizedUrl" value="pages/view/login/login.jsp" />
+		<property name="filterChainDefinitions">
+			<value>
+				/login.html* = anon
+				/login.jsp* = anon
+				/login.do* = anon
+				/index.jsp*= anon
+				/pages/** = authc
+				/*.jsp* = authc
+				/*.do* = authc
+			</value>
+		</property>
+	</bean>
+	
 	    <!-- 扫描文件（自动将servicec层注入） 
     <context:component-scan base-package="cn.springmvc"/>-->
     

@@ -15,7 +15,7 @@ public class ThridAccountVo {
 	/**
 	 * QQ第三方密钥
 	 */
-	private String AccessToken;
+	private String accessToken;
 	
 	/**
 	 * 微信第三方登录主键
@@ -85,11 +85,11 @@ public class ThridAccountVo {
 	}
 
 	public String getAccessToken() {
-		return AccessToken;
+		return accessToken;
 	}
 
 	public void setAccessToken(String accessToken) {
-		AccessToken = accessToken;
+		this.accessToken = accessToken;
 	}
 
 	public String getAppId() {

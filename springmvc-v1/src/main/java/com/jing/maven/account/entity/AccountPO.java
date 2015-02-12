@@ -42,6 +42,11 @@ public class AccountPO extends IdEntity {
 	private String infoid;
 	
 	/**
+	 * 第三方账号
+	 */
+	private String thridAccount;
+	
+	/**
 	 * 创建时间
 	 */
 	private String createDate;
@@ -111,6 +116,14 @@ public class AccountPO extends IdEntity {
 
 	public void setMac(String mac) {
 		this.mac = mac;
+	}
+
+	public String getThridAccount() {
+		return thridAccount;
+	}
+
+	public void setThridAccount(String thridAccount) {
+		this.thridAccount = thridAccount;
 	}
 	
 	

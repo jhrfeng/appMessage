@@ -1,8 +1,22 @@
 package com.jing.maven.account.entity;
 
+import javax.persistence.GenerationType;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.jing.maven.manager.entity.IdEntity;
 
+import javax.persistence.Entity;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Table;
+
+@JsonInclude(Include.NON_NULL) 
+@Entity
+@Table(name = "app_thrid_account")
 public class ThridAccountPO extends  IdEntity{
+	
+	private static final long serialVersionUID = 2433461464054606867L;
 
 	/**
 	 * qq的openId
@@ -54,7 +68,8 @@ public class ThridAccountPO extends  IdEntity{
 	 */
 	private String infoid;
 	
-
+	@SequenceGenerator(name = "generator", sequenceName = "CRM_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator")
 	public String getAutoAccount() {
 		return autoAccount;
 	}
