@@ -1,6 +1,7 @@
 package com.jing.maven;
 
 import com.jing.maven.account.entity.AccountPO;
+import com.jing.maven.account.model.ThridAccountVo;
 import com.jing.maven.infomation.entity.FriendListPO;
 import com.jing.maven.infomation.entity.InfomationPO;
 import com.jing.maven.infomation.model.InfomationRequest;
@@ -121,6 +122,14 @@ public class DataSource {
 		info.setGrade("6");
 		info.setClassroom("2");
 		return info;
+	}
+	
+	public static ThridAccountVo thridLogin(){
+		ThridAccountVo account = new ThridAccountVo();
+		account.setAppId("000111222");
+		account.setType("1");
+		account.setAccessToken("a22b34a56");
+		return account;
 	}
 
 }

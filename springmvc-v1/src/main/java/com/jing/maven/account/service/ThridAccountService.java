@@ -1,6 +1,7 @@
 package com.jing.maven.account.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,7 +16,7 @@ import com.jing.maven.infomation.dao.InfomationDao;
 import com.jing.maven.infomation.entity.FriendStatusPO;
 import com.jing.maven.infomation.entity.InfomationPO;
 
-
+@Service
 public class ThridAccountService {
 	
 	@Autowired

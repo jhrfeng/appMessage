@@ -94,7 +94,7 @@
 		<property name="realm" ref="MonitorRealm" />
 	</bean>
 		
-	<bean id="MonitorRealm" class="com.jing.maven.shiro.security.MonitorRealm"/>
+	<bean id="MonitorRealm" class="com.jing.maven.shiro.security.MonitorRealm" />
 	
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
