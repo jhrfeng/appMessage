@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jing.maven.account.entity.AccountPO;
 import com.jing.maven.account.model.AccountVo;
@@ -37,14 +38,22 @@ public class ThridAccountController {
 	 * @return
 	 */
 	@RequestMapping("/thridlogin")
+	@ResponseBody
 	public AccountVo accountLogin(@RequestBody ThridAccountVo account,HttpSession session, HttpServletRequest request){
 		AccountVo result = new AccountVo();
 		Subject currentUser = SecurityUtils.getSubject();
 		UsernamePasswordToken token;
-		if("1".equals(account.getType())){			
-			token = new UsernamePasswordToken(account.getOpenId().trim(), "1"); //qq
-		}else{
-			token = new UsernamePasswordToken(account.getAppId().trim(), "2"); //weixin
+		try{			
+			if("1".equals(account.getType())){			
+				token = new UsernamePasswordToken(account.getOpenId().trim(), "1"); //qq
+			}else{
+				token = new UsernamePasswordToken(account.getAppId().trim(), "2"); //weixin
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			result.setOptStatus(false);
+			result.setMessage("登录失败，信息获取失败");
+			return result;
 		}
 		token.setRememberMe(true);
 		try {
@@ -73,6 +82,7 @@ public class ThridAccountController {
 	 * @throws IOException 
 	 */
 	@RequestMapping(value = "/logout")
+	@ResponseBody
 	public Message logout(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		Message message = new Message();
 		Subject currentUser = SecurityUtils.getSubject();

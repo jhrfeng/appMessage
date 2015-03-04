@@ -1,10 +1,5 @@
 package com.jing.maven.shiro.security;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -21,6 +16,14 @@ import org.springframework.stereotype.Component;
 import org.apache.shiro.cache.Cache;
 
 import com.jing.maven.account.dao.ThridAccountDao;
+import com.jing.maven.account.entity.ThridAccountPO;
+import com.jing.maven.account.model.AccountVo;
+import com.jing.maven.account.service.ThridAccountService;
+import com.jing.maven.common.util.EncryptUtils;
+import com.jing.maven.infomation.dao.FriendStatusDao;
+import com.jing.maven.infomation.dao.InfomationDao;
+import com.jing.maven.infomation.entity.FriendStatusPO;
+import com.jing.maven.infomation.entity.InfomationPO;
 
 
 
@@ -34,6 +37,15 @@ public class MonitorRealm extends AuthorizingRealm {
 	
 	@Autowired 
 	private ThridAccountDao thridAccountDao;
+
+	@Autowired
+	private InfomationDao infomationDao;
+	
+	@Autowired
+	private FriendStatusDao friendStatusDao;
+	
+	@Autowired
+	private ThridAccountService thridAccountService;
 	
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -60,14 +72,17 @@ public class MonitorRealm extends AuthorizingRealm {
         String account = usToken.getUsername();
         char[] type = usToken.getPassword();
         Long status = null;
-        if("1".equals(type[0])){ //QQ
+        if("1".equals(type[0]+"")){ //QQ
         	status = thridAccountDao.getQQ(account);
         }else{ //weixin
         	status = thridAccountDao.getWeiXin(account);
         }
         if(null!=status && status ==1 ){
-        	info = new SimpleAuthenticationInfo(null, type, getName());
+        	
+        }else{
+        	accountLogin(type[0]+"", account); //进行注册
         }
+        info = new SimpleAuthenticationInfo(account, type, getName());
         return info;
     
 	}
@@ -89,6 +104,84 @@ public class MonitorRealm extends AuthorizingRealm {
 			new SimplePrincipalCollection(principal, getName());
 		
 		clearCachedAuthorizationInfo(principals);
+	}
+	
+	public void accountLogin(String type, String account){
+		AccountVo accountVo = new AccountVo();
+		try{			
+			if("1".equals(type)){// 1为QQ
+				ThridAccountPO qq = thridAccountDao.findByQQ(account);
+				if(null!=qq){ //已注册
+					FriendStatusPO friendStatus = friendStatusDao.findBySipAccount(qq.getTid());
+					accountVo.setFriendStatus(friendStatus);
+				}else{
+					
+					//生成个人信息表
+					InfomationPO info = new InfomationPO();
+					info.setCreateDate("2012/12/12");
+					info.setUpdateDate("2112/12/12");
+					infomationDao.save(info);
+					
+					//生成账号系统
+					ThridAccountPO thridAccount = new ThridAccountPO();
+					thridAccount.setOpenId(account);
+			
+					thridAccount.setInfoid(info.getTid());
+
+					thridAccount.setCreateDate("2012/12/12");
+					thridAccount.setUpdateDate("2012/12/12");
+					thridAccountDao.save(thridAccount);
+					
+					/***************************************/
+					
+					//生成语音账号	
+					FriendStatusPO friendStatus = new FriendStatusPO();
+					friendStatus.setMyinfoId(info.getTid());
+					friendStatus.setSipAccount(thridAccount.getTid());
+					friendStatus.setSipPwd(EncryptUtils.string2MD5(thridAccount.getTid()));
+					friendStatus.setStatus("1"); //在线
+					friendStatusDao.save(friendStatus);
+					
+					/***************************************/
+					accountVo.setFriendStatus(friendStatus);				
+				}			
+			}else if("2".equals(type)){ //为微信
+				ThridAccountPO weixin = thridAccountDao.findByWeiXin(account);
+				if(null!=weixin){ //已注册
+					FriendStatusPO friendStatus = friendStatusDao.findBySipAccount(weixin.getTid());
+					accountVo.setFriendStatus(friendStatus);
+				}else{
+					//生成个人信息表
+					InfomationPO info = new InfomationPO();
+					info.setCreateDate("2012/12/12");
+					info.setUpdateDate("2112/12/12");
+					infomationDao.save(info);
+					
+					//生成账号系统
+					ThridAccountPO thridAccount = new ThridAccountPO();
+					thridAccount.setAppId(account);
+					
+					thridAccountDao.save(thridAccount);
+					
+					/***************************************/
+					
+					//生成语音账号	
+					FriendStatusPO friendStatus = new FriendStatusPO();
+					friendStatus.setMyinfoId(info.getTid());
+					friendStatus.setSipAccount(thridAccount.getTid());
+					friendStatus.setSipPwd(EncryptUtils.string2MD5(thridAccount.getTid()));
+					friendStatus.setStatus("1"); //在线
+					friendStatusDao.save(friendStatus);
+					
+					/***************************************/
+					accountVo.setFriendStatus(friendStatus);				
+				}
+			}
+		
+		}catch(Exception e){
+			e.printStackTrace();
+			
+		}
 	}
 	
 }

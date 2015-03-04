@@ -1,4 +1,4 @@
-package com.jing.maven;
+package com.jing.test;
 
 import com.jing.maven.account.entity.AccountPO;
 import com.jing.maven.account.model.ThridAccountVo;

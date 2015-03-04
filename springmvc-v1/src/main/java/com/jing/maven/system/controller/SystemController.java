@@ -80,7 +80,7 @@ public class SystemController {
 		try {  
 			inputStream = file.getInputStream();  
   
-			File newFile = new File("E:\\Users\\" + fileName);  
+			File newFile = new File("/usr/local/" + fileName);  
 			if (!newFile.exists()) {  
 				newFile.createNewFile();  
 			}  
@@ -115,7 +115,7 @@ public class SystemController {
 			response.setHeader("content-disposition", "attachment;filename="+downloadFileName);
 			
 			// 读取图片数据  发给ie浏览器
-			String webPath = "E:/shirodemo.log" ;	// 相当于当前web应用的path
+			String webPath = root+"shirodemo.log" ;	// 相当于当前web应用的path
 		
 			InputStream in = new FileInputStream(webPath);
 	

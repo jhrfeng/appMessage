@@ -40,7 +40,9 @@ public class InfomationService {
 		try{
 			String id = infoRequest.getRequestId();
 			if(null==id)	id = ""; //当前登录用户信息id
-		    infomation = infomationDao.findOne(infoRequest.getRequestId());		
+		    infomation = infomationDao.findOne(infoRequest.getRequestId());	
+		    if(null==infomation)
+		    	return new InfomationPO();
 		    return infomation;
 		}catch(Exception e){
 			/** 日志记录 **/
