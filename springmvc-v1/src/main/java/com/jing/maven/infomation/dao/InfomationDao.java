@@ -17,7 +17,7 @@ public interface InfomationDao extends PagingAndSortingRepository<InfomationPO, 
 //	@Query(" from InfomationPO t where t.tid in (select a.infoid from AccountPO a where a.account like %:matchKey% ) or t.honeyName like %:matchKey% ")
 	//public List<InfomationPO> searchFriend(@Param("matchKey") String matchKey, @Param("myid") String myid);
 	
-	@Query("select new InfomationPO(tid, honeyName, sex, province, area) from InfomationPO t where (t.tid in (select a.infoid from ThridAccountPO a where a.autoAccount = :matchKey) or t.honeyName like %:matchKey%) and t.tid != :myid ")
+	@Query("select new InfomationPO(tid, nickname, sex, province, area) from InfomationPO t where (t.tid in (select a.infoid from ThridAccountPO a where a.autoAccount = :matchKey) or t.nickname like %:matchKey%) and t.tid != :myid ")
 	public List<InfomationPO> searchFriend(@Param("matchKey") String matchKey, @Param("myid") String myid);
 
 }

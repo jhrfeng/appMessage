@@ -48,7 +48,7 @@ public class AccountService {
 				friendStatus.setStatus("1");
 				friendStatusDao.save(friendStatus);
 				accountVo.setFriendStatus(friendStatus);
-				accountVo.setAccount(loginAccount);
+			//	accountVo.setAccount(loginAccount);
 				
 				/**********************/				
 				accountVo.setOptStatus(true);

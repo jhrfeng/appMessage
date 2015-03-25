@@ -23,7 +23,7 @@ public class InfomationPO  extends IdEntity {
 	/**
 	 * 昵称
 	 */
-	private String honeyName;
+	private String nickname;
 	
 	/**
 	 * 性别
@@ -109,24 +109,26 @@ public class InfomationPO  extends IdEntity {
 	 * 操作人ID
 	 */
 	private String updateId;
+	
+	private String signature;
 
 	public InfomationPO(){}
 	
-	public InfomationPO(String tid, String honeyName, String sex, String province, String area){
+	public InfomationPO(String tid, String nickname, String sex, String province, String area){
 		this.tid = tid;
-		this.honeyName = honeyName;
+		this.nickname = nickname;
 		this.sex = sex;
 		this.province = province;
 		this.area = area;
 		
 	}
 	
-	public String getHoneyName() {
-		return honeyName;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setHoneyName(String honeyName) {
-		this.honeyName = honeyName;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public String getSex() {
@@ -264,6 +266,15 @@ public class InfomationPO  extends IdEntity {
 	public void setClassroom(String classroom) {
 		this.classroom = classroom;
 	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+	
 	
 	
 	

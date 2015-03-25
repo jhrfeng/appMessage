@@ -36,8 +36,5 @@ public class FriendVo extends Message{
 	public void setInfomationList(List<InfomationPO> infomationList) {
 		this.infomationList = infomationList;
 	}
-	
-	
-	
 
 }

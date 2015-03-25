@@ -27,6 +27,12 @@ public class Message {
 		this.optStatus = optStatus;
 		this.message = message;
 	}
+	
+	public Message(String optCode, Boolean optStatus, String message){
+		this.optCode = optCode;
+		this.optStatus = optStatus;
+		this.message = message;
+	}
 
 	public String getOptCode() {
 		return optCode;

@@ -1,4 +1,4 @@
-package com.jing.maven;
+package com.jing.maven.test;
 
 import java.io.IOException;
 
@@ -19,6 +19,7 @@ import com.jing.maven.common.util.JsonUtils;
 
 
 
+
 /**
  * 接口测试父类
  * @author lee
@@ -32,14 +33,14 @@ public class SuperServiceTest implements ServletContextAware{
 	private final static Logger log = LoggerFactory.getLogger(SuperServiceTest.class);
 	
 	//测试地址
-	private static String jtestUrlString;
+	//private static String jtestUrlString = "http://123.57.68.242:8080"; // /springmvc/jtest/index.html
+    private static String jtestUrlString = "http://localhost:8080";  //   /springmvc-v1/jtest/index.html";
 	
-	protected static String serviceRootUrl;
+	//protected static String serviceRootUrl = "/springmvc";
+	protected static String serviceRootUrl = "/springmvc-v1";
 	
 	private ServletContext servletContext;
 	
-	//@Value("${jtest.urlString}")
-	@Value("")
 	public void setJtestUrlString(String jtestUrlString){
 		SuperServiceTest.jtestUrlString=jtestUrlString;
 	}
@@ -82,8 +83,8 @@ public class SuperServiceTest implements ServletContextAware{
 	}
 	
 	public static String getUrlString(String url, Object po) throws JsonMappingException, JsonGenerationException, IOException{
-		log.info("----------jtestUrlString----------"+jtestUrlString);
-		log.info("----------serviceRootUrl----------"+serviceRootUrl);
+		System.out.print("----------jtestUrlString----------"+jtestUrlString);
+		System.out.print("----------serviceRootUrl----------"+serviceRootUrl);
 		
 		String url_new = new String(jtestUrlString);
 		

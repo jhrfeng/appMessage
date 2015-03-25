@@ -21,7 +21,8 @@
 <a href="testService.jsp?type=008" target="_blank">好友新增</a><br/>
 <a href="testService.jsp?type=009" target="_blank">好友删除</a><br/>
 <a href="testService.jsp?type=010" target="_blank">修改昵称</a><br/>
-<a href="testService.jsp?type=011" target="_blank">修改签名</a><br/>
+<a href="testService.jsp?type=011" target="_blank">修改备注</a><br/>
+<a href="testService.jsp?type=019" target="_blank">修改签名</a><br/>
 <a href="testService.jsp?type=012" target="_blank">修改生日</a><br/>
 <a href="testService.jsp?type=013" target="_blank">修改地区</a><br/>
 <a href="testService.jsp?type=014" target="_blank">修改学校</a><br/>

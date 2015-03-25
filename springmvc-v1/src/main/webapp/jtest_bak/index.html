@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>接口测试</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" type="text/css" href="./css/app.min.css">
+    <script src="./js/Base64.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/jquery.cookie.js"></script>
+    <script src="./js/app.min.js"></script>
+    <script src="./js/Base64-80.js"></script>
+</head>
+
+<script>
+
+    var interfaceUrl;
+    var originUrlParm;
+    var originUrlParmJsonStr;
+
+    var responseJsonStr;
+
+    var headerCookie = "";
+
+</script>
+
+<body style="overflow-y: scroll">
+
+<script>
+
+    var LocString = String(window.document.location.href);
+    function getQueryStr(str) {
+        var rs = new RegExp("(^|)" + str + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
+        if (tmp = rs) {
+            return tmp[2];
+        }
+        // parameter cannot be found
+        return "";
+    }
+
+    function getStrByBase64(base64str) {
+        var unicode = BASE64.decoder(base64str);//返回会解码后的unicode码数组。
+
+//        console.log(unicode);
+//可由下面的代码编码为string
+
+        var str = '';
+        for (var i = 0 , len = unicode.length; i < len; ++i) {
+            str += String.fromCharCode(unicode[i]);
+        }
+        return str;
+    }
+</script>
+    接口URl：
+	<span id="interfaceUrl" style="line-height:1.5;">
+	http://zhgz.json.test
+	</span>
+<br/>
+模拟请求数据：
+<div id="originUrlParmJsonStrEditor" style="width: 100%; height: 150px;"></div>
+
+<table style="width:100%;height:70%;" cellpadding="2" cellspacing="0" border="1" bordercolor="#000000">
+    <tbody>
+    <tr height="40px">
+        <td>
+            <input type="button" value="加载请求json到编辑器" onclick="loadRequestJsonToEditor();"/>
+            <input type="button" value="将编辑器中json在右侧显示>>>>>>>>>>>>" onclick="loadEditorJsonToText();"/>
+        </td>
+        <td>
+            服务器返回数据为：
+        </td>
+    </tr>
+    <tr height="40px">
+        <td>
+            <input type="button" value="用编辑器中的数据对接口进行请求" style="font-size: 20px;color: indianred;font-weight: bold " onclick="requestInterfaceWithEditor();"/>
+        </td>
+        <td>
+            <input type="button" value="加载返回的json到编辑器" onclick="loadBackJsonToEditor();"/>
+            <input type="button" value="<<<<<<<<<<<<将右侧的数据在左侧显示" onclick="loadLeftJsonToEditor();"/>
+        </td>
+    </tr>
+    <tr height="80%">
+        <td>
+            <div style="height:100%;width:100%;">
+                <div id="jsoneditor"></div>
+            </div>
+        </td>
+        <td style="width:50%;">
+            <div style="height:100%;width:100%;">
+                <div id="responseJsonStrEditor" style="height: 100%;width: 100%;"></div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    /**
+     * 加载JSON编辑器
+     * @type {HTMLElement}
+     */
+    var container = document.getElementById('jsoneditor');
+
+    var options = {
+        "mode": "tree",
+        editable: function (node) {
+            switch (node.field) {
+                default:
+                    return true;
+            }
+        }
+    };
+    var json =
+    {
+    };
+
+    //  var editor = new JSONEditor(container, options, json);
+    var editor = new JSONEditor(container, options, json);
+
+    container = document.getElementById('originUrlParmJsonStrEditor');
+
+    options = {
+        "mode": "code",
+        "data": "json",
+        editable: function (node) {
+            switch (node.field) {
+                default:
+                    return true;
+            }
+        }
+    };
+    json =
+    {
+        "String": "测试分割线==========================",
+        "String1": "测试分割线=========================="
+    };
+
+    var editor_originUrlParmJsonStr = new JSONEditor(container, options, json);
+    editor_originUrlParmJsonStr.setText(JSON.stringify(json));
+
+
+    var container = document.getElementById('responseJsonStrEditor');
+    var editor_responseJsonStr = new JSONEditor(container, options, json);
+//    editor_responseJsonStr.setText(JSON.stringify(json));
+
+
+</script>
+
+<script type="text/javascript">
+    /**
+     * 获取url相关参数
+     */
+    interfaceUrl = getQueryStr("url");
+
+    document.getElementById('interfaceUrl').innerText = interfaceUrl;
+
+    originUrlParm = getQueryStr("base64");
+    /**
+     * 注释原来base64解码方法
+     */
+//    originUrlParmJsonStr = getStrByBase64(originUrlParm);
+    originUrlParmJsonStr = decode64(originUrlParm);
+
+//    alert(originUrlParmJsonStr);
+    //    document.getElementById('originUrlParmJsonStr').innerText=originUrlParmJsonStr;
+
+    editor_originUrlParmJsonStr.setText(originUrlParmJsonStr);
+
+    editor.setText(originUrlParmJsonStr);
+
+</script>
+
+<script>
+    function loadRequestJsonToEditor() {
+//        alert("loadRequestJsonToEditor：");
+//        originUrlParmJsonStr=$("#originUrlParmJsonStr").val();
+        originUrlParmJsonStr = editor_originUrlParmJsonStr.getText();
+        console.log(originUrlParmJsonStr);
+        editor.setText(originUrlParmJsonStr);
+    }
+    function requestInterfaceWithEditor() {
+        var sendJson = editor.getText();
+
+        console.log(sendJson);
+
+        if (sendJson == '{}') {
+            sendJson = "";
+        }
+        console.log("发送的数据为：=========" + sendJson);
+
+        headerCookie = $.cookie('sessionId');
+
+        if (headerCookie == "" || headerCookie == undefined) {
+            console.log("if(headerCookie==\"\") headerCookie=" + headerCookie);
+            $.ajax({
+                type: 'POST',
+                crossDomain: true,
+                url: interfaceUrl,
+                data: sendJson,
+                headers: {
+                    'Content-Type':'application/json;charset=UTF-8'
+                },
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    responseJsonStr = JSON.stringify(data);
+                    console.log(responseJsonStr);
+//              alert(JSON.stringify(data));
+//                document.getElementById("requestResult").innerText=responseJsonStr;
+                    /**
+                     * 对editor设置文本
+                     */
+                    editor.setText(responseJsonStr);
+
+                    loadEditorJsonToText();
+
+                    var obj = JSON.parse(responseJsonStr);
+                    if (obj.sessionId != "") {
+                        if (obj.validateCode != "") {
+                            console.log("*********sessionId=" + obj.sessionId);  // sessionId
+                            $.cookie("sessionId", obj.sessionId, { expires: 7 }); // 存储一个带7天期限的 cookie
+                            console.log("*********sessionId=" + $.cookie('sessionId'));  // sessionId
+                            headerCookie = "";
+                        }
+                    }
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("error");
+                    alert("error:" + XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                }
+            });
+        }
+        else {
+            headerCookie = $.cookie('sessionId'); // 读取 cookie
+            console.log("headerCookie=" + headerCookie);
+//            document.cookie = "Cookie=" + headerCookie + "; path=/";//关键path
+            console.log(interfaceUrl + ";" + headerCookie);
+            $.ajax({
+                type: 'POST',
+                crossDomain: true,
+                url: interfaceUrl + ";" + "jsessionid=" + headerCookie,
+//                url: interfaceUrl,
+//                headers: {
+////                    "Cookie":headerCookie
+//                "Set-Cookie":headerCookie
+//                },
+                headers: {
+                    'Content-Type':'application/json;charset=UTF-8'
+                },
+                data: sendJson,
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    responseJsonStr = JSON.stringify(data);
+                    console.log(responseJsonStr);
+//              alert(JSON.stringify(data));
+//                document.getElementById("requestResult").innerText=responseJsonStr;
+                    /**
+                     * 对editor设置文本
+                     */
+                    editor.setText(responseJsonStr);
+
+                    loadEditorJsonToText();
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("error");
+                    alert("error:" + XMLHttpRequest.readyState + XMLHttpRequest.status + XMLHttpRequest.responseText);
+                }
+            });
+        }
+
+    }
+    function loadBackJsonToEditor() {
+//        alert("loadBackJsonToEditor：");
+//        document.getElementById('resultStr').innerHTML=responseJsonStr;
+        editor_responseJsonStr.setText(responseJsonStr);
+    }
+
+    /**
+     *
+     */
+    function loadEditorJsonToText() {
+//        alert("loadEditorJsonToText：");
+//        alert($("#resultStr").text());
+
+        var editorJsonStr = editor.getText();
+        console.log(editorJsonStr);
+//        document.getElementById('resultStr').innerHTML=editorJsonStr;
+        editor_responseJsonStr.setText(editorJsonStr);
+    }
+
+    /**
+     *
+     */
+    function loadLeftJsonToEditor() {
+//        var leftStr = $("#resultStr").val();
+
+//        document.getElementById('resultStr').innerHTML;
+//        alert($("#resultStr").text());
+//        alert($("#resultStr").val());      //此取值方法比较变态
+        var leftStr = editor_responseJsonStr.getText();
+        editor.setText(leftStr);
+    }
+
+</script>
+<center>
+    版权所有
+</center>
+</body>
+</html>
+    

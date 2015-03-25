@@ -1,13 +1,13 @@
 package com.jing.maven.infomation.service;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.jing.maven.common.system.BaseService;
 import com.jing.maven.infomation.dao.FriendListDao;
 import com.jing.maven.infomation.dao.FriendStatusDao;
 import com.jing.maven.infomation.dao.InfomationDao;
@@ -19,7 +19,7 @@ import com.jing.maven.infomation.model.InfomationRequest;
 import com.jing.maven.manager.entity.Message;
 
 @Service
-public class InfomationService {
+public class InfomationService extends BaseService{
 	
 	@Autowired
 	private InfomationDao infomationDao;
@@ -39,15 +39,13 @@ public class InfomationService {
 		InfomationPO infomation = new InfomationPO();
 		try{
 			String id = infoRequest.getRequestId();
-			if(null==id)	id = ""; //当前登录用户信息id
+			//if(null==id)	id = inputId(); //当前登录用户信息id
 		    infomation = infomationDao.findOne(infoRequest.getRequestId());	
 		    if(null==infomation)
 		    	return new InfomationPO();
 		    return infomation;
 		}catch(Exception e){
 			/** 日志记录 **/
-			
-			
 			return infomation;
 		}
 	}
@@ -59,36 +57,41 @@ public class InfomationService {
 	 */
 	public Message updateInfo(InfomationPO infomation){
 		Message message = new Message();
-		if(null != infomation.getTid()){			
-			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
-			upInfo.setAddr(infomation.getAddr());
-			upInfo.setAge(infomation.getAge());
-			upInfo.setArea(infomation.getArea());
-			upInfo.setBirthday(infomation.getBirthday());
-			upInfo.setCity(infomation.getCity());
-			upInfo.setEmail(infomation.getEmail());
-			upInfo.setGrade(infomation.getGrade());
-			upInfo.setHoneyName(infomation.getHoneyName());
-			upInfo.setMobile(infomation.getMobile());
-			upInfo.setProvince(infomation.getProvince());
-			upInfo.setQq(infomation.getQq());
-			upInfo.setRemark(infomation.getRemark());
-			upInfo.setSchool(infomation.getSchool());
-			upInfo.setSex(infomation.getSex());
-			upInfo.setUpdateDate("2012/12/12");
-			upInfo.setUpdateId(""); //操作人
-			infomationDao.save(upInfo);
-			/***********日志记录***************/
-			
-			
-			message.setOptStatus(true);
-			message.setMessage("信息修改成功");		
-		}else{
+		message.setOptCode("400");
+		message.setOptStatus(false);
+		message.setMessage("信息修改失败");	
+		try{
+			if(null != infomation.getTid()){			
+				InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
+				upInfo.setAddr(infomation.getAddr());
+				upInfo.setAge(infomation.getAge());
+				upInfo.setArea(infomation.getArea());
+				upInfo.setBirthday(infomation.getBirthday());
+				upInfo.setCity(infomation.getCity());
+				upInfo.setEmail(infomation.getEmail());
+				upInfo.setGrade(infomation.getGrade());
+				upInfo.setNickname(infomation.getNickname());
+				upInfo.setMobile(infomation.getMobile());
+				upInfo.setProvince(infomation.getProvince());
+				upInfo.setQq(infomation.getQq());
+				upInfo.setRemark(infomation.getRemark());
+				upInfo.setSchool(infomation.getSchool());
+				upInfo.setSex(infomation.getSex());
+				upInfo.setUpdateDate(formatUpdateDate(new Date()));
+				upInfo.setUpdateId(inputId()); //操作人
+				infomationDao.save(upInfo);
+				/***********日志记录***************/
+				message.setOptCode("200");
+				message.setOptStatus(true);
+				message.setMessage("信息修改成功");		
+			}
+			return message;
+		}catch(Exception e){
+			message.setOptCode("400");
 			message.setOptStatus(false);
 			message.setMessage("个人信息修改失败，无法获取到主键");
+			return message;
 		}
-		
-		return message;
 	}
 	
 	/**
@@ -99,21 +102,22 @@ public class InfomationService {
 	public Message updateRemark(FriendListPO friend){
 		Message message = new Message();
 		try{
-			//FriendListPO upFreiend = friendListDao.findByMidAndFid(currentid, friend.getFriendId());
 			FriendListPO upFriend = friendListDao.findOne(friend.getTid());
 		    if(null != friend.getFriendId() && friend.getFriendId().equals(upFriend.getFriendId())){
 				upFriend.setFriendRemark(friend.getFriendRemark());
 				friendListDao.save(upFriend);
-				
+				message.setOptCode("200");
 				message.setOptStatus(true);
 				message.setMessage("修改成功");
 			}else{
+				message.setOptCode("400");
 				message.setOptStatus(false);
 				message.setMessage("修改失败");
 			}
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
+			message.setOptCode("400");
 			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
@@ -132,18 +136,14 @@ public class InfomationService {
 		try{			
 			//加载我的好友列表
 			List<FriendListPO> myfriendList = friendListDao.findByMyid(infoRequest.getRequestId());
-			/**************************/
-			   // 加载好友语音账号
-			
-			/**************************/
-			
-			
 			friendVo.setFriendList(myfriendList);
+			friendVo.setOptCode("200");
 			friendVo.setOptStatus(true);
 			friendVo.setMessage("加载好友列表成功");
 			return friendVo;
 		}catch(Exception e){
 			e.printStackTrace();
+			friendVo.setOptCode("400");
 			friendVo.setOptStatus(false);
 			friendVo.setMessage("好友列表加载失败");
 			return friendVo;
@@ -171,15 +171,17 @@ public class InfomationService {
 		try{
 			/****************/
 				//这里应该把自己给排除掉
-			String myid = "";
+			String myid = inputId();
 			/****************/
 			List<InfomationPO> friendList = infomationDao.searchFriend(infoRequest.getRequestName(), myid);
 			friendVo.setInfomationList(friendList);
+			friendVo.setOptCode("200");
 			friendVo.setOptStatus(true);
 			friendVo.setMessage("共"+friendList.size()+"位相关好友");
 			return friendVo;
 		}catch(Exception e){
 			e.printStackTrace();
+			friendVo.setOptCode("400");
 			friendVo.setOptStatus(false);
 			friendVo.setMessage("查找失败");
 			return friendVo;
@@ -197,6 +199,7 @@ public class InfomationService {
 		
 		Message message = new Message();		
 		try{	
+			message.setOptCode("200");
 			message.setOptStatus(true);
 			message.setMessage("新增成功");	
 			
@@ -205,6 +208,7 @@ public class InfomationService {
 			
 			// 防止自己加自己为好友
 			if(infomationRequest.getMyId().equals(infomationRequest.getFriendId())){
+				message.setOptCode("400");
 				message.setOptStatus(false);
 				message.setMessage("新增失败,不能添加自己为好友");
 				return message;
@@ -235,7 +239,8 @@ public class InfomationService {
 			friendList.setFriendId(infomationRequest.getFriendId());
 			//friendList.setStatus("2"); //验证
 			friendList.setStatus("1"); //默认为好友
-			friendList.setMyRemark(friendInfo.getHoneyName()); //你的昵称
+			friendList.setNickname(friendInfo.getNickname());
+			//friendList.setMyRemark(friendInfo.getHoneyName()); //你的昵称
 			friendList.setFriendSip(friendStatus.getSipAccount());
 			friendListDao.save(friendList);  //主动添加好友
 			
@@ -243,13 +248,15 @@ public class InfomationService {
 			friendList.setMyId(infomationRequest.getFriendId());
 			friendList.setFriendId(infomationRequest.getMyId());
 			friendList.setStatus("1");
-			friendList.setMyRemark(myInfo.getHoneyName()); //我的昵称
+			friendList.setNickname(myInfo.getNickname());
+		//	friendList.setMyRemark(myInfo.getHoneyName()); //我的昵称
 			friendList.setFriendSip(myStatus.getSipAccount());
 			friendListDao.save(friendList);  //被动添加好友
 						
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
+			message.setOptCode("400");
 			message.setOptStatus(false);
 			message.setMessage("好友新增失败");
 			return message;
@@ -315,23 +322,26 @@ public class InfomationService {
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
-			upInfo.setHoneyName(infomation.getHoneyName());
+			upInfo.setNickname(infomation.getNickname());
+			//upInfo.setHoneyName(infomation.getHoneyName());
 			upInfo.setUpdateDate("2012/12/12");
-			upInfo.setUpdateId("");
+			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
+			message.setOptCode("200");
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptStatus(true);
+			message.setOptCode("400");
+			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
 		}
 	}
 	
 	/**
-	 * 修改签名
+	 * 修改备注
 	 * @param infomation
 	 * @return
 	 */
@@ -340,19 +350,39 @@ public class InfomationService {
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
 			upInfo.setRemark(infomation.getRemark());
-			upInfo.setUpdateDate("2012/12/12");
-			upInfo.setUpdateId("");
+			upInfo.setUpdateDate(formatUpdateDate(new Date()));
+			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptStatus(true);
+			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
 		}
 	}
+	
+	public Message update_signature(@RequestBody InfomationPO infomation){
+		Message message = new Message();
+		try{
+			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
+			upInfo.setSignature(infomation.getSignature());
+			upInfo.setUpdateDate(formatUpdateDate(new Date()));
+			upInfo.setUpdateId(inputId());
+			infomationDao.save(upInfo);
+			message.setOptStatus(true);
+			message.setMessage("修改成功");
+			return message;
+		}catch(Exception e){
+			e.printStackTrace();
+			message.setOptStatus(false);
+			message.setMessage("修改失败");
+			return message;
+		}
+	}
+	
 	
 	/**
 	 * 修改生日
@@ -363,16 +393,17 @@ public class InfomationService {
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
-			upInfo.setHoneyName(infomation.getHoneyName());
-			upInfo.setUpdateDate("2012/12/12");
-			upInfo.setUpdateId("");
+	//		upInfo.setHoneyName(infomation.getHoneyName());
+			upInfo.setNickname(infomation.getNickname());
+			upInfo.setUpdateDate(formatUpdateDate(new Date()));
+			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptStatus(true);
+			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
 		}
@@ -389,15 +420,15 @@ public class InfomationService {
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
 			upInfo.setProvince(infomation.getProvince());
 			upInfo.setArea(infomation.getArea());
-			upInfo.setUpdateDate("2012/12/12");
-			upInfo.setUpdateId("");
+			upInfo.setUpdateDate(formatUpdateDate(new Date()));
+			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptStatus(true);
+			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
 		}
@@ -413,15 +444,17 @@ public class InfomationService {
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
 			upInfo.setSchool(infomation.getSchool());
-			upInfo.setUpdateDate("2012/12/12");
-			upInfo.setUpdateId("");
+			upInfo.setUpdateDate(formatUpdateDate(new Date()));
+			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
+			message.setOptCode("200");
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptStatus(true);
+			message.setOptCode("400");
+			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
 		}
@@ -438,15 +471,17 @@ public class InfomationService {
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
 			upInfo.setGrade(infomation.getGrade());
 			upInfo.setClassroom(infomation.getClassroom());
-			upInfo.setUpdateDate("2012/12/12");
-			upInfo.setUpdateId("");
+			upInfo.setUpdateDate(formatUpdateDate(new Date()));
+			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
+			message.setOptCode("200");
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptStatus(true);
+			message.setOptCode("400");
+			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
 		}

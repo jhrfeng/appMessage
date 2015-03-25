@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jing.maven.common.system.BaseController;
 import com.jing.maven.infomation.entity.FriendListPO;
 import com.jing.maven.infomation.entity.InfomationPO;
 import com.jing.maven.infomation.model.FriendVo;
@@ -16,8 +17,8 @@ import com.jing.maven.infomation.service.InfomationService;
 import com.jing.maven.manager.entity.Message;
 
 @Controller
-@RequestMapping("infomation")
-public class InfomationController {
+@RequestMapping("information")
+public class InfomationController extends BaseController{
 	
 	@Autowired
 	private InfomationService infoService;
@@ -38,10 +39,14 @@ public class InfomationController {
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/updateInfo")
+	@RequestMapping("/modifyInfo")
 	@ResponseBody
 	public Message updateInfo(@RequestBody InfomationPO infomation){
-		return infoService.updateInfo(infomation);
+		if(authLogin()){
+			return infoService.updateInfo(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
 	}
 	
 	/**
@@ -52,7 +57,12 @@ public class InfomationController {
 	@RequestMapping("/updateRemark")
 	@ResponseBody
 	public Message updateRemark(@RequestBody FriendListPO friend){
-		return infoService.updateRemark(friend);
+		if(authLogin()){
+			return infoService.updateRemark(friend);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 	
 	/**
@@ -63,7 +73,16 @@ public class InfomationController {
 	@RequestMapping("/loadFriendList")
 	@ResponseBody
 	public FriendVo loadFriendList(@RequestBody InfomationRequest infoRequest){
-		return infoService.loadFriendList(infoRequest);
+		if(authLogin()){
+			return infoService.loadFriendList(infoRequest);
+		}else{
+			FriendVo friendVo = new FriendVo();
+			friendVo.setOptCode("500");
+			friendVo.setOptStatus(false);
+			friendVo.setMessage("没有权限访问");
+			return friendVo;
+		}
+		
 	}
 	
 	/**
@@ -84,7 +103,15 @@ public class InfomationController {
 	@RequestMapping("/searchFriend")
 	@ResponseBody
 	public FriendVo searchFriend(@RequestBody InfomationRequest infoRequest){
-		return infoService.searchFriend(infoRequest);
+		if(authLogin()){
+			return infoService.searchFriend(infoRequest);
+		}else{
+			FriendVo friendVo = new FriendVo();
+			friendVo.setOptCode("500");
+			friendVo.setOptStatus(false);
+			friendVo.setMessage("没有权限访问");
+			return friendVo;
+		}
 	}
 	
 	/**
@@ -95,7 +122,12 @@ public class InfomationController {
 	@RequestMapping("/addFriend")
 	@ResponseBody
 	public Message addFriend(@RequestBody FriendListPO infomationRequest){
-		return infoService.addFriend(infomationRequest);
+		if(authLogin()){
+			return infoService.addFriend(infomationRequest);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 	
 	/**
@@ -105,7 +137,12 @@ public class InfomationController {
 	@RequestMapping("/validFriend")
 	@ResponseBody
 	public Message validFriend(@RequestBody FriendListPO friendList){
-		return infoService.validFriend(friendList);
+		if(authLogin()){
+			return infoService.validFriend(friendList);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 	
 	/**
@@ -116,7 +153,12 @@ public class InfomationController {
 	@RequestMapping("/delFriend")
 	@ResponseBody
 	public Message delFriend(@RequestBody FriendListPO friendList){
-		return infoService.delFriend(friendList);
+		if(authLogin()){
+			return infoService.delFriend(friendList);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 
 	/**
@@ -124,21 +166,41 @@ public class InfomationController {
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/up_honeyname")
+	@RequestMapping("/modify_honeyname")
 	@ResponseBody
 	public Message update_HoneyName(@RequestBody InfomationPO infomation){
-		return infoService.update_HoneyName(infomation);
+		if(authLogin()){
+			return infoService.update_HoneyName(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 	
 	/**
-	 * 修改签名
+	 * 修改备注
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/up_remark")
+	@RequestMapping("/modify_remark")
 	@ResponseBody
 	public Message update_Remark(@RequestBody InfomationPO infomation){
-		return infoService.update_Remark(infomation);
+		if(authLogin()){
+			return infoService.update_Remark(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
+	}
+	
+	@RequestMapping("modify_signature")
+	public Message update_signature(@RequestBody InfomationPO infomation){
+		if(authLogin()){
+			return infoService.update_signature(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+	
 	}
 	
 	/**
@@ -146,10 +208,15 @@ public class InfomationController {
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/up_birthday")
+	@RequestMapping("/modify_birthday")
 	@ResponseBody
 	public Message update_birthday(@RequestBody InfomationPO infomation){
-		return infoService.update_birthday(infomation);
+		if(authLogin()){
+			return infoService.update_birthday(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 	
 	/**
@@ -157,10 +224,15 @@ public class InfomationController {
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/up_area")
+	@RequestMapping("/modify_area")
 	@ResponseBody
 	public Message update_area(@RequestBody InfomationPO infomation){
-		return infoService.update_province(infomation);
+		if(authLogin()){
+			return infoService.update_province(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 	
 	/**
@@ -168,10 +240,15 @@ public class InfomationController {
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/up_school")
+	@RequestMapping("/modify_school")
 	@ResponseBody
 	public Message update_school(@RequestBody InfomationPO infomation){
-		return infoService.update_school(infomation);
+		if(authLogin()){
+			return infoService.update_school(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+		
 	}
 	
 	/**
@@ -179,10 +256,15 @@ public class InfomationController {
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/up_class")
+	@RequestMapping("/modify_class")
 	@ResponseBody
 	public Message update_class(@RequestBody InfomationPO infomation){
-		return infoService.update_class(infomation);
+		if(authLogin()){
+			return infoService.update_class(infomation);
+		}else{
+			return new Message("500",false, "没有权限访问");
+		}
+	
 	}
 	
 }

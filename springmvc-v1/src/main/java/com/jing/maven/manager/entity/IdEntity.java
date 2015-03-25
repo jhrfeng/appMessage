@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  */
 //JPA 基类的标识
 @MappedSuperclass
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
 public abstract class IdEntity  implements Serializable{
 	
 	protected String tid;

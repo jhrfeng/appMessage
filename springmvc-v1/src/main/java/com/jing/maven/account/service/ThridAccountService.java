@@ -1,18 +1,22 @@
 package com.jing.maven.account.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.jing.maven.account.dao.ThridAccountDao;
 import com.jing.maven.account.entity.ThridAccountPO;
 import com.jing.maven.account.model.AccountVo;
 import com.jing.maven.account.model.ThridAccountVo;
+import com.jing.maven.common.system.BaseService;
 import com.jing.maven.infomation.dao.FriendStatusDao;
 import com.jing.maven.infomation.dao.InfomationDao;
 import com.jing.maven.infomation.entity.FriendStatusPO;
 
 
 @Service
-public class ThridAccountService {
+public class ThridAccountService extends BaseService{
 	
 	@Autowired
 	private ThridAccountDao thridAccountDao;
@@ -39,7 +43,7 @@ public class ThridAccountService {
 					if(null==qq.getMac()){
 						qq.setMac(account.getMac());
 						qq.setAccessToken(account.getAccessToken());
-						qq.setUpdateDate("2012/12/12");
+						qq.setUpdateDate(formatUpdateDate(new Date()));
 						thridAccountDao.save(qq);
 					}					
 					FriendStatusPO friendStatus = friendStatusDao.findBySipAccount(qq.getTid());
@@ -51,7 +55,7 @@ public class ThridAccountService {
 					if(null==weixin.getMac()){
 						weixin.setMac(account.getMac());
 						weixin.setSecret(account.getSecret());
-						weixin.setUpdateDate("2012/12/12");
+						weixin.setUpdateDate(formatUpdateDate(new Date()));
 						thridAccountDao.save(weixin);
 					}		
 					FriendStatusPO friendStatus = friendStatusDao.findBySipAccount(weixin.getTid());

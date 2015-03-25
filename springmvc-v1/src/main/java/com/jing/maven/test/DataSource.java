@@ -1,6 +1,7 @@
-package com.jing.maven;
+package com.jing.maven.test;
 
 import com.jing.maven.account.entity.AccountPO;
+import com.jing.maven.account.model.OtherAccountVo;
 import com.jing.maven.account.model.ThridAccountVo;
 import com.jing.maven.infomation.entity.FriendListPO;
 import com.jing.maven.infomation.entity.InfomationPO;
@@ -50,7 +51,8 @@ public class DataSource {
 		infomation.setCity("shanghai");
 		infomation.setEmail("1059731125@qq.com");
 		infomation.setGrade("9");
-		infomation.setHoneyName("hellowMoneky");
+		infomation.setNickname("helloMonekty");
+	//	infomation.setHoneyName("hellowMoneky");
 		infomation.setMobile("1363221234");
 		infomation.setProvince("shanghai");
 		infomation.setQq("1059731125");
@@ -83,7 +85,8 @@ public class DataSource {
 	public static InfomationPO upHoneyname(){
 		InfomationPO info = new InfomationPO();
 		info.setTid("402884e54b2699f3014b269a0e8b0000");
-		info.setHoneyName("小乖乖");
+		//info.setHoneyName("小乖乖");
+		
 		return info;	
 	}
 	
@@ -132,6 +135,17 @@ public class DataSource {
 		account.setOpenId("qq123456");
 		account.setSecret("ab21sfs234");
 		account.setMac("00-1b-2d-4f-3a-5b-a2");
+		return account;
+	}
+	
+	public static OtherAccountVo otherAccountLogin(){
+		OtherAccountVo account = new OtherAccountVo();
+		account.setType("1");
+		account.setAppId("qq123456");
+		account.setAppToken("ab27c9b2");
+		account.setMac("1b-25-c1-a5-51");
+		account.setHoneyName("zhongyue");
+		account.setAge("11");
 		return account;
 	}
 

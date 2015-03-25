@@ -43,13 +43,13 @@ public class FriendListPO extends IdEntity {
 	private String status;
 
 	/**
-	 * 我的备注
+	 * 好友昵称    ----》删除掉，从个人信息中关联过去
 	 */
 	 
-	private String myRemark;
+	private String nickname;
 	
 	/**
-	 * 好友sip账号
+	 * 好友sip账号   ---》删除掉，从个人信息中关联回去
 	 */
 	private String friendSip;
 
@@ -86,12 +86,12 @@ public class FriendListPO extends IdEntity {
 		this.status = status;
 	}
 
-	public String getMyRemark() {
-		return myRemark;
+	public String getNickname() {
+		return nickname;
 	}
 
-	public void setMyRemark(String myRemark) {
-		this.myRemark = myRemark;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public String getFriendSip() {

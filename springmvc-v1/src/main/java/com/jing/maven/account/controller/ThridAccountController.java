@@ -18,6 +18,8 @@ import com.jing.maven.account.entity.AccountPO;
 import com.jing.maven.account.model.AccountVo;
 import com.jing.maven.account.model.ThridAccountVo;
 import com.jing.maven.account.service.ThridAccountService;
+import com.jing.maven.common.model.UserVo;
+import com.jing.maven.common.system.AuthorityHelper;
 import com.jing.maven.manager.entity.Message;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -26,7 +28,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 
 @Controller
-@RequestMapping("accountsys")
+@RequestMapping("accountsys_bak")
 public class ThridAccountController {
 	
 	@Autowired
@@ -67,7 +69,7 @@ public class ThridAccountController {
 		if(currentUser.isAuthenticated()){
 			result = thridAccountService.accountLogin(account);
 			session.setAttribute( "sysUserInfo", result.getFriendStatus());
-			
+			testLogin();
 		}else{
 			result.setOptStatus(false);
 			result.setMessage("登录失败");
@@ -84,6 +86,7 @@ public class ThridAccountController {
 	@RequestMapping(value = "/logout")
 	@ResponseBody
 	public Message logout(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		testLogin();
 		Message message = new Message();
 		Subject currentUser = SecurityUtils.getSubject();
 		Session session = currentUser.getSession();
@@ -121,5 +124,10 @@ public class ThridAccountController {
 	}
 	
 
+	public void testLogin(){
+		UserVo userVo = AuthorityHelper.getUser();
+		System.out.println("infoid-------------------"+userVo.getInfoId());
+		System.out.println("appid--------------------"+userVo.getAccountId());
+	}
 
 }
