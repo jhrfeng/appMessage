@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jing.maven.common.system.BaseController;
 import com.jing.maven.infomation.entity.FriendListPO;
 import com.jing.maven.infomation.entity.InfomationPO;
-import com.jing.maven.infomation.model.FriendVo;
+import com.jing.maven.infomation.model.FriendListVo;
 import com.jing.maven.infomation.model.InfomationRequest;
+import com.jing.maven.infomation.model.InformationVo;
+import com.jing.maven.infomation.request.InformationReq;
 import com.jing.maven.infomation.service.InfomationService;
 import com.jing.maven.manager.entity.Message;
 
@@ -30,9 +32,19 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/showInfo")
 	@ResponseBody
-	public InfomationPO showInfo(@RequestBody InfomationRequest infoRequest){		
-		return infoService.showInfo(infoRequest);
+	public InformationVo showInfo(){		
+		return infoService.showInfo();
 	}
+	
+	/**
+	 * 查看好友信息接口
+	 */
+	@RequestMapping("/findOtherInfo")
+	@ResponseBody
+	public InformationVo findOtherInfo(@RequestBody InformationReq infoRequest){		
+		return infoService.findOtherInfo(infoRequest);
+	}
+	
 	
 	/**
 	 * 个人好友信息修改接口
@@ -41,7 +53,7 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/modifyInfo")
 	@ResponseBody
-	public Message updateInfo(@RequestBody InfomationPO infomation){
+	public Message updateInfo(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.updateInfo(infomation);
 		}else{
@@ -54,11 +66,11 @@ public class InfomationController extends BaseController{
 	 * @param friend
 	 * @return
 	 */
-	@RequestMapping("/updateRemark")
+	@RequestMapping("/modifyFriendRemark")
 	@ResponseBody
-	public Message updateRemark(@RequestBody FriendListPO friend){
+	public Message modifyFriendRemark(@RequestBody InformationReq friend){
 		if(authLogin()){
-			return infoService.updateRemark(friend);
+			return infoService.modifyFriendRemark(friend);
 		}else{
 			return new Message("500",false, "没有权限访问");
 		}
@@ -72,11 +84,11 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/loadFriendList")
 	@ResponseBody
-	public FriendVo loadFriendList(@RequestBody InfomationRequest infoRequest){
+	public FriendListVo loadFriendList(){
 		if(authLogin()){
-			return infoService.loadFriendList(infoRequest);
+			return infoService.loadFriendList();
 		}else{
-			FriendVo friendVo = new FriendVo();
+			FriendListVo friendVo = new FriendListVo();
 			friendVo.setOptCode("500");
 			friendVo.setOptStatus(false);
 			friendVo.setMessage("没有权限访问");
@@ -102,11 +114,11 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/searchFriend")
 	@ResponseBody
-	public FriendVo searchFriend(@RequestBody InfomationRequest infoRequest){
+	public FriendListVo searchFriend(@RequestBody InfomationRequest infoRequest){
 		if(authLogin()){
 			return infoService.searchFriend(infoRequest);
 		}else{
-			FriendVo friendVo = new FriendVo();
+			FriendListVo friendVo = new FriendListVo();
 			friendVo.setOptCode("500");
 			friendVo.setOptStatus(false);
 			friendVo.setMessage("没有权限访问");

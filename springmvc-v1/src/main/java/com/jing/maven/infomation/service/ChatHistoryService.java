@@ -17,7 +17,7 @@ import com.jing.maven.infomation.entity.FriendStatusPO;
 import com.jing.maven.infomation.entity.InfomationPO;
 import com.jing.maven.infomation.model.ChatRequest;
 import com.jing.maven.infomation.model.ChatVo;
-import com.jing.maven.infomation.model.FriendVo;
+import com.jing.maven.infomation.model.FriendListVo;
 import com.jing.maven.infomation.model.InfomationRequest;
 import com.jing.maven.manager.entity.Message;
 

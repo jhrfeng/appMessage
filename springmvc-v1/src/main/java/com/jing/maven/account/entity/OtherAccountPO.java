@@ -62,8 +62,17 @@ public class OtherAccountPO extends  IdEntity{
 	 * 个人信息外键
 	 */
 	private String infoid;
-
 	
+
+	/**
+	 * sip账号
+	 */
+	private String sipAccount;
+	
+	/**
+	 * sip密码
+	 */
+	private String sipPwd;
 	
 	@SequenceGenerator(name = "generator", sequenceName = "CRM_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator")
@@ -139,5 +148,22 @@ public class OtherAccountPO extends  IdEntity{
 		this.type = type;
 	}
 
+	public String getSipAccount() {
+		return sipAccount;
+	}
+
+	public void setSipAccount(String sipAccount) {
+		this.sipAccount = sipAccount;
+	}
+
+	public String getSipPwd() {
+		return sipPwd;
+	}
+
+	public void setSipPwd(String sipPwd) {
+		this.sipPwd = sipPwd;
+	}
+
+	
 	
 }

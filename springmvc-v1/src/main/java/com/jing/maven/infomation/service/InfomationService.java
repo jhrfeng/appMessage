@@ -8,14 +8,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.jing.maven.common.system.BaseService;
+import com.jing.maven.infomation.dao.FriendDao;
 import com.jing.maven.infomation.dao.FriendListDao;
 import com.jing.maven.infomation.dao.FriendStatusDao;
 import com.jing.maven.infomation.dao.InfomationDao;
 import com.jing.maven.infomation.entity.FriendListPO;
+import com.jing.maven.infomation.entity.FriendPO;
 import com.jing.maven.infomation.entity.FriendStatusPO;
 import com.jing.maven.infomation.entity.InfomationPO;
-import com.jing.maven.infomation.model.FriendVo;
+import com.jing.maven.infomation.model.FriendListVo;
 import com.jing.maven.infomation.model.InfomationRequest;
+import com.jing.maven.infomation.model.InformationVo;
+import com.jing.maven.infomation.model.SearchFriendVo;
+import com.jing.maven.infomation.request.InformationReq;
+import com.jing.maven.infomation.response.FriendRes;
 import com.jing.maven.manager.entity.Message;
 
 @Service
@@ -29,23 +35,67 @@ public class InfomationService extends BaseService{
 	
 	@Autowired
 	private FriendStatusDao friendStatusDao;
+	
+	@Autowired FriendDao friendDao;
 
 	/**
-	 * 个人好友信息查看接口
+	 * 个人信息查看接口
 	 * @param infoRequest
 	 * @return
 	 */
-	public InfomationPO showInfo(InfomationRequest infoRequest){
-		InfomationPO infomation = new InfomationPO();
+	public InformationVo showInfo(){
+		InformationVo infomation = new InformationVo();
 		try{
-			String id = infoRequest.getRequestId();
-			//if(null==id)	id = inputId(); //当前登录用户信息id
-		    infomation = infomationDao.findOne(infoRequest.getRequestId());	
-		    if(null==infomation)
-		    	return new InfomationPO();
-		    return infomation;
+			String id = inputId(); //当前登录用户信息id
+			InfomationPO  info = infomationDao.findOne(id);	
+			  if(null==info){
+			    	infomation.setOptCode("410"); //数据库未查询到数据
+			    	infomation.setOptStatus(false);
+			    	infomation.setMessage("未查找到数据");
+			    	return infomation;
+			    }else{
+			    	infomation.setOptCode("200");
+			    	infomation.setOptStatus(true);
+			    	infomation.setMessage("查询成功");
+			    	infomation.setInformation(infomationPOConvertRes(info));
+			    	return infomation;
+			    }
+			}catch(Exception e){
+				/** 日志记录 **/
+				infomation.setOptCode("510"); //代码异常
+		    	infomation.setOptStatus(false);
+		    	infomation.setMessage("处理发生异常");
+				return infomation;
+		}
+	}
+	
+	/**
+	 * 好友信息查看接口
+	 * @param infoRequest
+	 * @return
+	 */
+	public InformationVo findOtherInfo(InformationReq infoRequest){
+		InformationVo infomation = new InformationVo();
+		try{
+			String id = infoRequest.getTid();
+		    InfomationPO  info = infomationDao.findOne(id);	
+		    if(null==info){
+		    	infomation.setOptCode("410"); //数据库未查询到数据
+		    	infomation.setOptStatus(false);
+		    	infomation.setMessage("未查找到数据");
+		    	return infomation;
+		    }else{
+		    	infomation.setOptCode("200");
+		    	infomation.setOptStatus(true);
+		    	infomation.setMessage("查询成功");
+		    	infomation.setInformation(infomationPOConvertRes(info));
+		    	return infomation;
+		    }
 		}catch(Exception e){
 			/** 日志记录 **/
+			infomation.setOptCode("510"); //代码异常
+	    	infomation.setOptStatus(false);
+	    	infomation.setMessage("处理发生异常");
 			return infomation;
 		}
 	}
@@ -55,26 +105,23 @@ public class InfomationService extends BaseService{
 	 * @param infomation
 	 * @return
 	 */
-	public Message updateInfo(InfomationPO infomation){
+	public Message updateInfo(InformationReq infomation){
 		Message message = new Message();
-		message.setOptCode("400");
-		message.setOptStatus(false);
-		message.setMessage("信息修改失败");	
 		try{
 			if(null != infomation.getTid()){			
 				InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
 				upInfo.setAddr(infomation.getAddr());
-				upInfo.setAge(infomation.getAge());
+				//upInfo.setAge(infomation.getAge());
 				upInfo.setArea(infomation.getArea());
 				upInfo.setBirthday(infomation.getBirthday());
 				upInfo.setCity(infomation.getCity());
-				upInfo.setEmail(infomation.getEmail());
+				//upInfo.setEmail(infomation.getEmail());
 				upInfo.setGrade(infomation.getGrade());
 				upInfo.setNickname(infomation.getNickname());
-				upInfo.setMobile(infomation.getMobile());
+				//upInfo.setMobile(infomation.getMobile());
 				upInfo.setProvince(infomation.getProvince());
-				upInfo.setQq(infomation.getQq());
-				upInfo.setRemark(infomation.getRemark());
+			//	upInfo.setQq(infomation.getQq());
+			//	upInfo.setRemark(infomation.getRemark());
 				upInfo.setSchool(infomation.getSchool());
 				upInfo.setSex(infomation.getSex());
 				upInfo.setUpdateDate(formatUpdateDate(new Date()));
@@ -84,12 +131,16 @@ public class InfomationService extends BaseService{
 				message.setOptCode("200");
 				message.setOptStatus(true);
 				message.setMessage("信息修改成功");		
+			}else{
+				message.setOptCode("520"); //请求数据错误
+				message.setOptStatus(false);
+				message.setMessage("个人信息修改失败，无法获取到主键");	
 			}
 			return message;
 		}catch(Exception e){
-			message.setOptCode("400");
+			message.setOptCode("510"); //程序处理错误
 			message.setOptStatus(false);
-			message.setMessage("个人信息修改失败，无法获取到主键");
+			message.setMessage("发生异常");
 			return message;
 		}
 	}
@@ -99,27 +150,27 @@ public class InfomationService extends BaseService{
 	 * @param friend
 	 * @return
 	 */
-	public Message updateRemark(FriendListPO friend){
+	public Message modifyFriendRemark(InformationReq friend){
 		Message message = new Message();
 		try{
 			FriendListPO upFriend = friendListDao.findOne(friend.getTid());
-		    if(null != friend.getFriendId() && friend.getFriendId().equals(upFriend.getFriendId())){
-				upFriend.setFriendRemark(friend.getFriendRemark());
+		    if(null != friend.getTid() && friend.getTid().equals(upFriend.getFriendId())){
+				upFriend.setFriendRemark(friend.getFriendMark());
 				friendListDao.save(upFriend);
 				message.setOptCode("200");
 				message.setOptStatus(true);
 				message.setMessage("修改成功");
 			}else{
-				message.setOptCode("400");
+				message.setOptCode("520"); //请求数据有误
 				message.setOptStatus(false);
-				message.setMessage("修改失败");
+				message.setMessage("请求数据错误");
 			}
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptCode("400");
+			message.setOptCode("510");//程序处理错误
 			message.setOptStatus(false);
-			message.setMessage("修改失败");
+			message.setMessage("发生异常");
 			return message;
 		}
 		
@@ -130,20 +181,20 @@ public class InfomationService extends BaseService{
 	 * @param infoRequest
 	 * @return
 	 */
-	public FriendVo loadFriendList(InfomationRequest infoRequest){
+	public FriendListVo loadFriendList(){
 		
-		FriendVo friendVo = new FriendVo();
+		FriendListVo friendVo = new FriendListVo();
 		try{			
 			//加载我的好友列表
-			List<FriendListPO> myfriendList = friendListDao.findByMyid(infoRequest.getRequestId());
-			friendVo.setFriendList(myfriendList);
+			List<FriendPO> myfriendList = friendDao.findByMyid(inputId());
+			friendVo.setFriendList(friendPOConverRes(myfriendList));
 			friendVo.setOptCode("200");
 			friendVo.setOptStatus(true);
 			friendVo.setMessage("加载好友列表成功");
 			return friendVo;
 		}catch(Exception e){
 			e.printStackTrace();
-			friendVo.setOptCode("400");
+			friendVo.setOptCode("510"); //程序处理错误
 			friendVo.setOptStatus(false);
 			friendVo.setMessage("好友列表加载失败");
 			return friendVo;
@@ -166,8 +217,8 @@ public class InfomationService extends BaseService{
 	 * @param infoRequest
 	 * @return
 	 */
-	public FriendVo searchFriend(InfomationRequest infoRequest){
-		FriendVo friendVo = new FriendVo();
+	public SearchFriendVo searchFriend(InfomationRequest infoRequest){
+		SearchFriendVo friendVo = new SearchFriendVo();
 		try{
 			/****************/
 				//这里应该把自己给排除掉
