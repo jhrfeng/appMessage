@@ -7,6 +7,7 @@ import org.apache.shiro.SecurityUtils;
 
 import com.jing.maven.account.response.OtherAccountRes;
 import com.jing.maven.common.model.UserVo;
+import com.jing.maven.infomation.entity.FriendStatusPO;
 
 public class BaseService {
 	
@@ -47,7 +48,11 @@ public class BaseService {
 		}
 	}
 	
-	public OtherAccountRes friendStatusConvertOtherAccountRes(){
-		
+	public OtherAccountRes friendStatusConvertOtherAccountRes(FriendStatusPO friendStatus){
+		OtherAccountRes account = new OtherAccountRes();
+		account.setMyinfoId(friendStatus.getMyinfoId());
+		account.setSipAccount(friendStatus.getSipAccount());
+		account.setSipPwd(friendStatus.getSipPwd());
+		return account;
 	}
 }

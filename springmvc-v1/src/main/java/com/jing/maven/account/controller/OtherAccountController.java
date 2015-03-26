@@ -84,7 +84,7 @@ public class OtherAccountController extends BaseController{
 		}
 		if(currentUser.isAuthenticated()){
 			result = otherAccountService.accountLogin(account);
-			session.setAttribute( "sysUserInfo", result.getFriendStatus());
+			session.setAttribute( "sysUserInfo", result.getOtherAccount());
 		//	testLogin();
 		}else{
 			result.setOptCode("500");

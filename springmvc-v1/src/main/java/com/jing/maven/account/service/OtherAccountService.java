@@ -54,18 +54,19 @@ public class OtherAccountService extends BaseService{
 					otherAccountDao.save(otherAccount);
 				}
 				FriendStatusPO friendStatus = friendStatusDao.findBySipAccount(otherAccount.getTid());
-				accountVo.setFriendStatus(friendStatus);
+				accountVo.setOtherAccount(friendStatusConvertOtherAccountRes(friendStatus));
 				accountVo.setOptStatus(true);
 				accountVo.setMessage("登录成功");
 				return accountVo;	
 			}else{
 				accountVo.setOptStatus(false);
 				accountVo.setMessage("登录失败，未获取到登录类型");
-				accountVo.setOptCode("100");
+				accountVo.setOptCode("400");
 				return accountVo;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			accountVo.setOptCode("420"); //定义数据库查询错误
 			accountVo.setOptStatus(false);
 			accountVo.setMessage("登录异常");
 			return accountVo;
