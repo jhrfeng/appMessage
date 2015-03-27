@@ -14,6 +14,8 @@ import com.jing.maven.infomation.entity.InfomationPO;
 import com.jing.maven.infomation.model.FriendListVo;
 import com.jing.maven.infomation.model.InfomationRequest;
 import com.jing.maven.infomation.model.InformationVo;
+import com.jing.maven.infomation.model.SearchFriendVo;
+import com.jing.maven.infomation.request.FriendReq;
 import com.jing.maven.infomation.request.InformationReq;
 import com.jing.maven.infomation.service.InfomationService;
 import com.jing.maven.manager.entity.Message;
@@ -114,11 +116,11 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/searchFriend")
 	@ResponseBody
-	public FriendListVo searchFriend(@RequestBody InfomationRequest infoRequest){
+	public SearchFriendVo searchFriend(@RequestBody InformationReq infoRequest){
 		if(authLogin()){
 			return infoService.searchFriend(infoRequest);
 		}else{
-			FriendListVo friendVo = new FriendListVo();
+			SearchFriendVo friendVo = new SearchFriendVo();
 			friendVo.setOptCode("500");
 			friendVo.setOptStatus(false);
 			friendVo.setMessage("没有权限访问");
@@ -133,7 +135,7 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/addFriend")
 	@ResponseBody
-	public Message addFriend(@RequestBody FriendListPO infomationRequest){
+	public Message addFriend(@RequestBody FriendReq infomationRequest){
 		if(authLogin()){
 			return infoService.addFriend(infomationRequest);
 		}else{
@@ -164,9 +166,9 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/delFriend")
 	@ResponseBody
-	public Message delFriend(@RequestBody FriendListPO friendList){
+	public Message delFriend(@RequestBody FriendReq friendReq){
 		if(authLogin()){
-			return infoService.delFriend(friendList);
+			return infoService.delFriend(friendReq);
 		}else{
 			return new Message("500",false, "没有权限访问");
 		}
@@ -180,7 +182,7 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/modify_honeyname")
 	@ResponseBody
-	public Message update_HoneyName(@RequestBody InfomationPO infomation){
+	public Message update_HoneyName(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.update_HoneyName(infomation);
 		}else{
@@ -194,19 +196,19 @@ public class InfomationController extends BaseController{
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/modify_remark")
+/*	@RequestMapping("/modify_remark")
 	@ResponseBody
-	public Message update_Remark(@RequestBody InfomationPO infomation){
+	public Message update_Remark(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.update_Remark(infomation);
 		}else{
 			return new Message("500",false, "没有权限访问");
 		}
 		
-	}
+	}*/
 	
 	@RequestMapping("modify_signature")
-	public Message update_signature(@RequestBody InfomationPO infomation){
+	public Message update_signature(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.update_signature(infomation);
 		}else{
@@ -222,7 +224,7 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/modify_birthday")
 	@ResponseBody
-	public Message update_birthday(@RequestBody InfomationPO infomation){
+	public Message update_birthday(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.update_birthday(infomation);
 		}else{
@@ -238,7 +240,7 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/modify_area")
 	@ResponseBody
-	public Message update_area(@RequestBody InfomationPO infomation){
+	public Message update_area(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.update_province(infomation);
 		}else{
@@ -254,7 +256,7 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/modify_school")
 	@ResponseBody
-	public Message update_school(@RequestBody InfomationPO infomation){
+	public Message update_school(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.update_school(infomation);
 		}else{
@@ -270,7 +272,7 @@ public class InfomationController extends BaseController{
 	 */
 	@RequestMapping("/modify_class")
 	@ResponseBody
-	public Message update_class(@RequestBody InfomationPO infomation){
+	public Message update_class(@RequestBody InformationReq infomation){
 		if(authLogin()){
 			return infoService.update_class(infomation);
 		}else{

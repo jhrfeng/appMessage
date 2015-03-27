@@ -110,6 +110,9 @@ public class InfomationPO  extends IdEntity {
 	 */
 	private String updateId;
 	
+	/**
+	 * 签名
+	 */
 	private String signature;
 
 	public InfomationPO(){}

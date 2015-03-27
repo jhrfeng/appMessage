@@ -5,7 +5,7 @@ public class InformationReq {
 private String className = "InfomationRes"; 
 	
 	/**
-	 * 主键
+	 * 信息主键
 	 */
 	private String tid;	
 	

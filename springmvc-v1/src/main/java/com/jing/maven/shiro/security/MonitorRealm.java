@@ -100,13 +100,11 @@ public class MonitorRealm extends AuthorizingRealm {
 	}
 	
 	public void accountLogin(String type, String account){
-		AccountVo accountVo = new AccountVo();
 		try{	
 			
 			OtherAccountPO otherAccount = otherAccountDao.findByAppIdAndType(account, type);
 			if(null != otherAccount){
-				FriendStatusPO friendStatus = friendStatusDao.findBySipAccount(otherAccount.getTid());
-				accountVo.setFriendStatus(friendStatus);
+		
 			}else{
 				//生成个人信息表
 				InfomationPO info = new InfomationPO();
@@ -119,19 +117,16 @@ public class MonitorRealm extends AuthorizingRealm {
 				generateAccount.setAppId(account);
 				generateAccount.setInfoid(info.getTid());
 				generateAccount.setType(type);
+				//生成语音账号
+				generateAccount.setSipAccount(info.getTid());
+				generateAccount.setSipPwd(EncryptUtils.string2MD5(generateAccount.getTid()));
+				//生成系统账号
+				generateAccount.setAutoAccount(info.getTid());
+				
 				generateAccount.setCreateDate(JsonUtils.formatDate(new Date()));
 				generateAccount.setUpdateDate(JsonUtils.formatDate(new Date()));
 				otherAccountDao.save(generateAccount);
-				
-				//生成语音账号
-				FriendStatusPO friendStatus = new FriendStatusPO();
-				friendStatus.setMyinfoId(info.getTid());
-				friendStatus.setSipAccount(generateAccount.getTid());
-				friendStatus.setSipPwd(EncryptUtils.string2MD5(generateAccount.getTid()));
-				friendStatus.setStatus("1"); //状态
-				friendStatusDao.save(friendStatus);
-				
-				accountVo.setFriendStatus(friendStatus);
+
 			}
 		}catch(Exception e){
 			e.printStackTrace();

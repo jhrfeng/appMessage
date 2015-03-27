@@ -82,6 +82,17 @@ public class BaseService {
 		return res;
 	}
 	
+	public List<InformationRes> infomationPOConvertRes(List<InfomationPO> friendList){
+		List<InformationRes> resList = new ArrayList<InformationRes>();
+		if(null!=friendList){
+			for(InfomationPO friend : friendList){
+				resList.add(infomationPOConvertRes(friend));
+			}
+			return resList;
+		}
+		return resList;
+	}
+	
 	public FriendRes friendPOConverRes(FriendPO friend){
 		if(null==friend) return null;
 		FriendRes res = new FriendRes();

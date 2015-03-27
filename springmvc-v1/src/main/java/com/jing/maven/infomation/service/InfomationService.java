@@ -20,6 +20,7 @@ import com.jing.maven.infomation.model.FriendListVo;
 import com.jing.maven.infomation.model.InfomationRequest;
 import com.jing.maven.infomation.model.InformationVo;
 import com.jing.maven.infomation.model.SearchFriendVo;
+import com.jing.maven.infomation.request.FriendReq;
 import com.jing.maven.infomation.request.InformationReq;
 import com.jing.maven.infomation.response.FriendRes;
 import com.jing.maven.manager.entity.Message;
@@ -217,22 +218,22 @@ public class InfomationService extends BaseService{
 	 * @param infoRequest
 	 * @return
 	 */
-	public SearchFriendVo searchFriend(InfomationRequest infoRequest){
+	public SearchFriendVo searchFriend(InformationReq infoReq){
 		SearchFriendVo friendVo = new SearchFriendVo();
 		try{
 			/****************/
 				//这里应该把自己给排除掉
 			String myid = inputId();
 			/****************/
-			List<InfomationPO> friendList = infomationDao.searchFriend(infoRequest.getRequestName(), myid);
-			friendVo.setInfomationList(friendList);
+			List<InfomationPO> friendList = infomationDao.searchFriend(infoReq.getNickname(),infoReq.getTid(), myid);
+			friendVo.setSearchFriendList(infomationPOConvertRes(friendList));
 			friendVo.setOptCode("200");
 			friendVo.setOptStatus(true);
 			friendVo.setMessage("共"+friendList.size()+"位相关好友");
 			return friendVo;
 		}catch(Exception e){
 			e.printStackTrace();
-			friendVo.setOptCode("400");
+			friendVo.setOptCode("510");
 			friendVo.setOptStatus(false);
 			friendVo.setMessage("查找失败");
 			return friendVo;
@@ -246,7 +247,7 @@ public class InfomationService extends BaseService{
 	 * @param infomationRequest
 	 * @return
 	 */
-	public Message addFriend(FriendListPO infomationRequest){
+	public Message addFriend(FriendReq friendReq){
 		
 		Message message = new Message();		
 		try{	
@@ -255,53 +256,38 @@ public class InfomationService extends BaseService{
 			message.setMessage("新增成功");	
 			
 			/** 获取当前用户信息ID  **/
-		//	String currentid = "402884e54b1f4369014b1f437dda0000";
+			String currentid = inputId();
 			
 			// 防止自己加自己为好友
-			if(infomationRequest.getMyId().equals(infomationRequest.getFriendId())){
-				message.setOptCode("400");
+			if(currentid.equals(friendReq.getFriendid())){
+				message.setOptCode("530"); //逻辑错误
 				message.setOptStatus(false);
 				message.setMessage("新增失败,不能添加自己为好友");
 				return message;
 			}
 			/***********************/
 			//检查之前是否已建立好友关系, 如果建立更改状态为 验证，目前为直接加为好友
-			FriendListPO findFriend = friendListDao.findByMidAndFid(infomationRequest.getMyId(), infomationRequest.getFriendId());
+			FriendListPO findFriend = friendListDao.findByMidAndFid(currentid, friendReq.getFriendid());
 			if(null != findFriend){
 				if("1".equals(findFriend.getStatus())){
 					return message;
 				}else if("4".equals(findFriend.getStatus())){
-					findFriend.setStatus("1"); //删除好友变为 好友
+					findFriend.setStatus("1"); //4删除好友变为 好友
 					friendListDao.save(findFriend);
 					return message;
 				}
 			}
 			
-			/***********************/			
-			//查找当前好友信息
-			InfomationPO friendInfo = infomationDao.findOne(infomationRequest.getFriendId());
-			FriendStatusPO friendStatus = friendStatusDao.findByMyinfoId(infomationRequest.getFriendId());
-			//查找我的信息
-			InfomationPO myInfo = infomationDao.findOne(infomationRequest.getMyId());
-			FriendStatusPO myStatus = friendStatusDao.findByMyinfoId(infomationRequest.getMyId());
-
 			FriendListPO friendList = new FriendListPO();
-			friendList.setMyId(infomationRequest.getMyId());
-			friendList.setFriendId(infomationRequest.getFriendId());
-			//friendList.setStatus("2"); //验证
+			friendList.setMyId(inputId()); //我的信息ID
+			friendList.setFriendId(friendReq.getFriendid());
 			friendList.setStatus("1"); //默认为好友
-			friendList.setNickname(friendInfo.getNickname());
-			//friendList.setMyRemark(friendInfo.getHoneyName()); //你的昵称
-			friendList.setFriendSip(friendStatus.getSipAccount());
 			friendListDao.save(friendList);  //主动添加好友
 			
 			friendList = new FriendListPO();
-			friendList.setMyId(infomationRequest.getFriendId());
-			friendList.setFriendId(infomationRequest.getMyId());
+			friendList.setMyId(friendReq.getFriendid());
+			friendList.setFriendId(inputId());
 			friendList.setStatus("1");
-			friendList.setNickname(myInfo.getNickname());
-		//	friendList.setMyRemark(myInfo.getHoneyName()); //我的昵称
-			friendList.setFriendSip(myStatus.getSipAccount());
 			friendListDao.save(friendList);  //被动添加好友
 						
 			return message;
@@ -340,11 +326,11 @@ public class InfomationService extends BaseService{
 	 * @param infoRequest
 	 * @return
 	 */
-	public Message delFriend(FriendListPO friendList){
+	public Message delFriend(FriendReq friendReq){
 		Message message = new Message();
-		try{		
-			String friendid = friendList.getFriendId();
-			friendList = friendListDao.findOne(friendList.getTid());
+		try{	
+			String friendid = friendReq.getFriendid();
+			FriendListPO friendList = friendListDao.findOne(friendid); //查找要删除的好友信息
 			if(friendid.equals(friendList.getFriendId())){				
 				friendList.setStatus("4");  //删除
 				friendListDao.save(friendList);
@@ -352,14 +338,16 @@ public class InfomationService extends BaseService{
 				message.setMessage("删除成功");
 				return  message;
 			}else{
+				message.setOptCode("520"); //逻辑错误
 				message.setOptStatus(false);
 				message.setMessage("没有找到匹配好友，无法删除");
 				return  message;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
+			message.setOptCode("410"); //数据库处理异常
 			message.setOptStatus(false);
-			message.setMessage("删除失败");
+			message.setMessage("处理异常");
 			return message;
 		}
 	}
@@ -369,13 +357,12 @@ public class InfomationService extends BaseService{
 	 * @param infomation
 	 * @return
 	 */
-	public Message update_HoneyName(@RequestBody InfomationPO infomation){
+	public Message update_HoneyName(@RequestBody InformationReq infomation){
 		Message message = new Message();
 		try{
-			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
+			InfomationPO upInfo = infomationDao.findOne(inputId());
 			upInfo.setNickname(infomation.getNickname());
-			//upInfo.setHoneyName(infomation.getHoneyName());
-			upInfo.setUpdateDate("2012/12/12");
+			upInfo.setUpdateDate(formatUpdateDate(new Date()));
 			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
 			message.setOptCode("200");
@@ -384,7 +371,7 @@ public class InfomationService extends BaseService{
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptCode("400");
+			message.setOptCode("510");
 			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
@@ -396,7 +383,7 @@ public class InfomationService extends BaseService{
 	 * @param infomation
 	 * @return
 	 */
-	public Message update_Remark(@RequestBody InfomationPO infomation){
+	/*public Message update_Remark(@RequestBody InformationReq infomation){
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
@@ -413,9 +400,9 @@ public class InfomationService extends BaseService{
 			message.setMessage("修改失败");
 			return message;
 		}
-	}
+	}*/
 	
-	public Message update_signature(@RequestBody InfomationPO infomation){
+	public Message update_signature(@RequestBody InformationReq infomation){
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
@@ -423,11 +410,13 @@ public class InfomationService extends BaseService{
 			upInfo.setUpdateDate(formatUpdateDate(new Date()));
 			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
+			message.setOptCode("200");
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
+			message.setOptCode("510");
 			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
@@ -440,7 +429,7 @@ public class InfomationService extends BaseService{
 	 * @param infomation
 	 * @return
 	 */
-	public Message update_birthday(@RequestBody InfomationPO infomation){
+	public Message update_birthday(@RequestBody InformationReq infomation){
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
@@ -449,11 +438,13 @@ public class InfomationService extends BaseService{
 			upInfo.setUpdateDate(formatUpdateDate(new Date()));
 			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
+			message.setOptCode("200");
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
+			message.setOptCode("510");
 			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
@@ -465,7 +456,7 @@ public class InfomationService extends BaseService{
 	 * @param infomation
 	 * @return
 	 */
-	public Message update_province(@RequestBody InfomationPO infomation){
+	public Message update_province(@RequestBody InformationReq infomation){
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
@@ -474,11 +465,13 @@ public class InfomationService extends BaseService{
 			upInfo.setUpdateDate(formatUpdateDate(new Date()));
 			upInfo.setUpdateId(inputId());
 			infomationDao.save(upInfo);
+			message.setOptCode("200");
 			message.setOptStatus(true);
 			message.setMessage("修改成功");
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
+			message.setOptCode("510");
 			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
@@ -490,7 +483,7 @@ public class InfomationService extends BaseService{
 	 * @param infomation
 	 * @return
 	 */
-	public Message update_school(@RequestBody InfomationPO infomation){
+	public Message update_school(@RequestBody InformationReq infomation){
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
@@ -504,7 +497,7 @@ public class InfomationService extends BaseService{
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptCode("400");
+			message.setOptCode("510");
 			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
@@ -516,7 +509,7 @@ public class InfomationService extends BaseService{
 	 * @param infomation
 	 * @return
 	 */
-	public Message update_class(@RequestBody InfomationPO infomation){
+	public Message update_class(@RequestBody InformationReq infomation){
 		Message message = new Message();
 		try{
 			InfomationPO upInfo = infomationDao.findOne(infomation.getTid());
@@ -531,7 +524,7 @@ public class InfomationService extends BaseService{
 			return message;
 		}catch(Exception e){
 			e.printStackTrace();
-			message.setOptCode("400");
+			message.setOptCode("510");
 			message.setOptStatus(false);
 			message.setMessage("修改失败");
 			return message;
