@@ -2,6 +2,8 @@ package com.jing.maven.account.request;
 
 public class OtherAccountReq {
 	
+	private String className = "OtherAccountReq";
+	
 	/**
 	 * type 1为QQ第三方登录； 2为微信第三方登录；
 	 */
@@ -110,6 +112,15 @@ public class OtherAccountReq {
 	public void setAppToken(String appToken) {
 		this.appToken = appToken;
 	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+	
 	
 	
 

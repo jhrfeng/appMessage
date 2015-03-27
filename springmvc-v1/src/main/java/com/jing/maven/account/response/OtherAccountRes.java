@@ -2,6 +2,8 @@ package com.jing.maven.account.response;
 
 public class OtherAccountRes {
 	
+	private String className = "OtherAccountRes";
+	
 	/**
 	 * 我的信息ID
 	 */
@@ -39,6 +41,14 @@ public class OtherAccountRes {
 
 	public void setSipPwd(String sipPwd) {
 		this.sipPwd = sipPwd;
+	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
 	}
 	
 	

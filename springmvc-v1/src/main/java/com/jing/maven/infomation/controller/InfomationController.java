@@ -180,7 +180,7 @@ public class InfomationController extends BaseController{
 	 * @param infomation
 	 * @return
 	 */
-	@RequestMapping("/modify_honeyname")
+	@RequestMapping("/modify_nickname")
 	@ResponseBody
 	public Message update_HoneyName(@RequestBody InformationReq infomation){
 		if(authLogin()){
